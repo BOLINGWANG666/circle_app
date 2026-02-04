@@ -1,0 +1,101 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\Circle\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|c:\\users\\user\\desktop\\circle\\circle\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|solutionrelative:circle\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|c:\\users\\user\\desktop\\circle\\circle\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|solutionrelative:circle\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|c:\\users\\user\\desktop\\circle\\circle\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|solutionrelative:circle\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|c:\\users\\user\\desktop\\circle\\circle\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|solutionrelative:circle\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|c:\\users\\user\\desktop\\circle\\circle\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4103F44B-5F02-E291-35D4-DEBD0D592C5C}|Circle\\Circle.csproj|solutionrelative:circle\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MauiProgram.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MauiProgram.cs",
+              "RelativeDocumentMoniker": "Circle\\MauiProgram.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MauiProgram.cs",
+              "RelativeToolTip": "Circle\\MauiProgram.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-04T09:15:08.938Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MainPage.xaml.cs",
+              "RelativeDocumentMoniker": "Circle\\MainPage.xaml.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MainPage.xaml.cs",
+              "RelativeToolTip": "Circle\\MainPage.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-04T09:15:06.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppShell.xaml",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Circle\\Circle\\AppShell.xaml",
+              "RelativeDocumentMoniker": "Circle\\AppShell.xaml",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Circle\\Circle\\AppShell.xaml",
+              "RelativeToolTip": "Circle\\AppShell.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-04T09:14:54.898Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainPage.xaml",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MainPage.xaml",
+              "RelativeDocumentMoniker": "Circle\\MainPage.xaml",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Circle\\Circle\\MainPage.xaml",
+              "RelativeToolTip": "Circle\\MainPage.xaml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-04T09:14:20.159Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Circle\\Circle\\App.xaml",
+              "RelativeDocumentMoniker": "Circle\\App.xaml",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Circle\\Circle\\App.xaml",
+              "RelativeToolTip": "Circle\\App.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-04T09:11:27.283Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
