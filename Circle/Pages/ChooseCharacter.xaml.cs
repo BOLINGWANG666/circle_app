@@ -39,7 +39,7 @@ public partial class ChooseCharacter : ContentPage
             WarningLabel.IsVisible = false;
 
             //  2. 核心逻辑：玩家点击这个角色时，立刻将其属性装载到状态变量中
-            _selectedHp = 100;
+            _selectedHp = 100;                             
             _selectedAtk = 15;
             _selectedCd = 1.2;
             _selectedColor = Colors.Gray;
@@ -68,23 +68,17 @@ public partial class ChooseCharacter : ContentPage
             return;
         }
 
+        SoundManager.PlayClick();
         // --- 已选中，执行正常逻辑 ---
         await OkButton.ScaleToAsync(0.9, 100, Easing.CubicOut);
         await OkButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
         
-        await PlayCachedAudioAsync("tapstart.mp3");
+        
 
 
         // 3. 将变量中存储的最终数据传递给战场
         await Navigation.PushAsync(new BattleFieldPage(_selectedColor, _selectedHp, _selectedAtk, _selectedCd));
     }
 
-    private async Task PlayCachedAudioAsync(string tapName)
-    {
-        if (AudioPlayer != null)
-        {
-            AudioPlayer.Stop();
-            AudioPlayer.Play();
-        }
-    }
+    
 }

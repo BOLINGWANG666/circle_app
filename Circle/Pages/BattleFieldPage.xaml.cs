@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Circle.Pages;
 
@@ -92,12 +93,16 @@ public partial class BattleFieldPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _activeWaves.Clear();
+        BgmPlayer.Source = MediaSource.FromResource("BGM.mp3");
         _gameLoopTimer.Start();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        BgmPlayer.Stop();
+        _activeWaves.Clear();
         _gameLoopTimer.Stop();
     }
 
@@ -435,6 +440,8 @@ public partial class BattleFieldPage : ContentPage
             HpBar.Progress = 0;
 
             _gameLoopTimer.Stop();
+
+            BgmPlayer.Stop();
 
             await Task.Delay(300);
             await Navigation.PushAsync(new FailedPage());
