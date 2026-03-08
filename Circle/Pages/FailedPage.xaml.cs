@@ -32,6 +32,7 @@ public partial class FailedPage : ContentPage
 
     private async void OnRestartClicked(object sender, EventArgs e)
     {
+        SoundManager.PlayClick();
         // 点击效果
         await RestartButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await RestartButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
@@ -42,6 +43,7 @@ public partial class FailedPage : ContentPage
 
     private async void OnMenuClicked(object sender, EventArgs e)
     {
+        SoundManager.PlayClick();
         // 点击效果
         await MenuButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await MenuButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
