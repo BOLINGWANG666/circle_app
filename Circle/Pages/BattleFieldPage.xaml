@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Circle.Pages.BattleFieldPage"
+             Title="BattleFieldPage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"    
+             NavigationPage.HasBackButton="False">
+
+
+    <Grid>
+
+        <Grid x:Name="MapGrid" 
+              WidthRequest="1500" HeightRequest="1500"
+              HorizontalOptions="Center" VerticalOptions="Center">
+
+            <Border BackgroundColor="#F5F5DC" 
+                    Stroke="#333333" 
+                    StrokeThickness="10">
+            </Border>
+
+            <Border x:Name="PlayerCircle"
+                    WidthRequest="50" HeightRequest="50"
+                    HorizontalOptions="Center" VerticalOptions="Center"
+                    Stroke="Transparent">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25" />
+                </Border.StrokeShape>
+            </Border>
+        </Grid>
+
+        <Border HorizontalOptions="Start" VerticalOptions="Start" 
+                Margin="20" Padding="15,10"
+                BackgroundColor="#80000000" Stroke="Transparent">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="5">
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="HP" FontAttributes="Bold" TextColor="White" FontSize="16" VerticalOptions="Center"/>
+                    <ProgressBar x:Name="HpBar" Progress="1.0" ProgressColor="#FF4C4C" 
+                                 WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
+                    <Label x:Name="HpText" Text="???" TextColor="White" FontSize="14" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                    <Label x:Name="AtkText" Text="???" FontAttributes="Bold" TextColor="#FFA500" FontSize="14" />
+                    <Label x:Name="CdText" Text="???" FontAttributes="Bold" TextColor="#00BFFF" FontSize="14" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="EXP" FontAttributes="Bold" TextColor="White" FontSize="15" VerticalOptions="Center"/>
+                    <ProgressBar x:Name="ExpBar" Progress="0.0" ProgressColor="#00BFFF" BackgroundColor="Black"
+                                 WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
+                    <Label x:Name="ExpText" Text="LV0 0/10" TextColor="White" FontSize="14" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+               
+            </VerticalStackLayout>
+        </Border>
+        <Label x:Name="FpsLabel"
+               Text="FPS: 0"
+               TextColor="Lime"
+               FontAttributes="Bold"
+               FontSize="18"
+               HorizontalOptions="End"
+               VerticalOptions="Start"
+               Margin="0, 20, 20, 0" />
+        
+
+        <Grid HorizontalOptions="Start" VerticalOptions="End" Margin="40">
+            <Border WidthRequest="120" HeightRequest="120"
+                    BackgroundColor="Gray" Opacity="0.5" 
+                    Stroke="Transparent"
+                    HorizontalOptions="Center" VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="60" />
+                </Border.StrokeShape>
+            </Border>
+
+            <Border x:Name="JoystickInner" 
+                    WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="LightGray" 
+                    Stroke="Transparent"
+                    HorizontalOptions="Center" VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25" />
+                </Border.StrokeShape>
+            </Border>
+
+            <ContentView WidthRequest="180" HeightRequest="180" BackgroundColor="Transparent">
+                <ContentView.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnJoystickPanUpdated" />
+                </ContentView.GestureRecognizers>
+            </ContentView>
+        </Grid>
+
+    </Grid>
+</ContentPage>
