@@ -171,6 +171,11 @@ public partial class BattleFieldPage : ContentPage
         double cullDistX = (screenWidth / 2) + 100;
         double cullDistY = (screenHeight / 2) + 100;
 
+        // fix bug:获取当前屏幕真正的几何中心点（世界坐标）
+        // 因为前面定义了 cameraX = -playerX，所以 -cameraX 就是屏幕中心点
+        double screenCenterX = -cameraX;
+        double screenCenterY = -cameraY;
+
         // 2. 敌人生成
         _framesUntilNextSpawn--;
         // 屏幕上的敌人 + 回收站的敌人，总数绝对不会无限制增长
@@ -198,7 +203,9 @@ public partial class BattleFieldPage : ContentPage
             }
 
             // 视锥剔除
-            if (Math.Abs(dx) > cullDistX || Math.Abs(dy) > cullDistY)
+            // fix：视锥剔除改为基于“屏幕中心screenCenterX”判断，而不是玩家
+            if (Math.Abs(screenCenterX - enemy.WorldX) > cullDistX ||
+                Math.Abs(screenCenterY - enemy.WorldY) > cullDistY)
             {
                 enemy.UIContainer.IsVisible = false;
             }
@@ -226,7 +233,9 @@ public partial class BattleFieldPage : ContentPage
             double dx = _playerWorldX - gem.TranslationX;
             double dy = _playerWorldY - gem.TranslationY;
 
-            gem.IsVisible = !(Math.Abs(dx) > cullDistX || Math.Abs(dy) > cullDistY);
+            // fix：宝石的隐身同样基于屏幕中心
+            gem.IsVisible = !(Math.Abs(screenCenterX - gem.TranslationX) > cullDistX ||
+                              Math.Abs(screenCenterY - gem.TranslationY) > cullDistY);
 
             if (dx * dx + dy * dy < 60 * 60)
             {
