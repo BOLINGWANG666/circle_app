@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Core;
+
 
 namespace Circle;
 
@@ -8,6 +8,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+
         var builder = MauiApp.CreateBuilder();
 
         builder

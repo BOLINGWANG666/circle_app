@@ -4,35 +4,29 @@
              x:Class="Circle.MainPage"
              BackgroundColor="#F5F5DC"
              NavigationPage.HasNavigationBar="False">
-   
-
 
     <Grid>
-        
-        <VerticalStackLayout Spacing="30"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center">
+        <VerticalStackLayout Spacing="40" VerticalOptions="Center" HorizontalOptions="Center">
 
-            <Label x:Name="CircleLabel"
-                   Text="Circle"
-                   FontSize="60"
-                   TextColor="#333333"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   Opacity="0"
-                   TranslationY="100" />
+            <Label x:Name="CircleLabel" Text="Circle" FontSize="60" TextColor="#333333" FontAttributes="Bold" HorizontalOptions="Center" Opacity="0" TranslationY="100" />
 
-            <Button x:Name="StartButton"
-                    Text="Start"
-                    FontSize="24"
-                    TextColor="White"
-                    BackgroundColor="#333333"
-                    CornerRadius="25"
-                    WidthRequest="200"
-                    HeightRequest="60"
-                    Opacity="0"
-                    Clicked="OnStartClicked"
-                    IsEnabled="False"/>
+            <Grid x:Name="ButtonGrid" RowSpacing="20" ColumnSpacing="20" HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="StartButton" Text="Start" FontSize="24" TextColor="White" BackgroundColor="#333333" CornerRadius="25" WidthRequest="200" HeightRequest="60" Opacity="0" Clicked="OnStartClicked" IsEnabled="False" HorizontalOptions="Center"/>
+
+                <Button x:Name="SaveFileButton" Text="Save File" FontSize="24" TextColor="White" BackgroundColor="#333333" CornerRadius="25" WidthRequest="200" HeightRequest="60" Opacity="0" IsVisible="False" Clicked="OnSaveFileClicked" HorizontalOptions="Center"/>
+
+                <Button x:Name="HowToPlayButton" Text="How to Play" FontSize="24" TextColor="White" BackgroundColor="#333333" CornerRadius="25" WidthRequest="200" HeightRequest="60" Opacity="0" Clicked="OnHowToPlayClicked" HorizontalOptions="Center"/>
+            </Grid>
+
         </VerticalStackLayout>
     </Grid>
 
