@@ -1,4 +1,4 @@
-using System.IO;
+
 using CommunityToolkit.Maui.Views;
 
 namespace Circle.Pages;
@@ -29,7 +29,7 @@ public partial class ChooseCharacter : ContentPage
 
     private async void OnCharacterTapped(object sender, EventArgs e)
     {
-        // 假设这里点击的是你现在的“灰色圆圈 (基础角色)”
+        
         isSelected = !isSelected;
 
         if (isSelected)
@@ -38,7 +38,7 @@ public partial class ChooseCharacter : ContentPage
             StatsPanel.IsVisible = true;
             WarningLabel.IsVisible = false;
 
-            //  2. 核心逻辑：玩家点击这个角色时，立刻将其属性装载到状态变量中
+            //  2. 玩家点击这个角色时，立刻将其属性装载到状态变量中
             _selectedHp = 100;                             
             _selectedAtk = 15;
             _selectedCd = 1.2;

@@ -1,15 +1,17 @@
 ﻿using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Circle.Pages;
 
 public partial class BattleFieldPage : ContentPage
 {
+    //新增变量：游戏时间和结束状态
+    private double _timeRemaining = 60.0;
+    private bool _isGameOver = false;
+    // 在 BattleFieldPage 类里实例化它，确保 Current 不为空
+    private Circle.ViewModels.CharacterViewModel _viewModel = new Circle.ViewModels.CharacterViewModel();
+
     // --- 性能监控变量 ---
     private int _fpsCount = 0;
     private DateTime _lastFpsTime = DateTime.Now;
@@ -36,7 +38,7 @@ public partial class BattleFieldPage : ContentPage
     private readonly double _maxJoystickRadius = 35;
     private IDispatcherTimer _gameLoopTimer;
 
-    // ==================== 实体数据结构 ====================
+    // 实体数据结构
     private class EnemyInfo
     {
         public required Border UIContainer { get; set; }
@@ -65,6 +67,9 @@ public partial class BattleFieldPage : ContentPage
     // 死亡敌人回收站 (对象池)
     private Queue<EnemyInfo> _deadEnemiesPool = new Queue<EnemyInfo>();
 
+    // 记录当前这一局的专属存档ID（0代表还没存过）
+    private int _currentSaveSessionId = 0;
+
     public BattleFieldPage(Color charColor, int hp, int atk, double cd)
     {
         InitializeComponent();
@@ -90,6 +95,44 @@ public partial class BattleFieldPage : ContentPage
         _gameLoopTimer.Tick += GameLoop;
     }
 
+    // 专门用于“读取存档”的构造函数
+    public BattleFieldPage(Circle.Models.PlayerSaveData saveData, Color charColor)
+    {
+        InitializeComponent();
+
+        _playerColor = charColor;
+        _playerMaxHp = saveData.MaxHp;
+        _playerHp = saveData.Hp;
+        _playerAtk = saveData.Atk;
+        _playerCd = saveData.Cd;
+
+        _playerLevel = saveData.Level;
+        _playerExp = saveData.Exp;
+        // 根据读取的等级，重新计算升到下一级需要多少经验
+        _expToNextLevel = 10 + (_playerLevel * 5);
+
+        // 恢复剩余时间（如果旧存档没这数据，设为60）
+        _timeRemaining = saveData.TimeRemaining > 0 ? saveData.TimeRemaining : 60.0;
+
+        // 将当前的存档ID绑定！这样后续你再吃经验升级，就会覆盖旧存档，而不是新建！
+        _currentSaveSessionId = saveData.Id;
+
+        PlayerCircle.BackgroundColor = _playerColor;
+
+        HpText.Text = $"{_playerHp}/{_playerMaxHp}";
+        HpBar.Progress = (double)_playerHp / _playerMaxHp;
+        AtkText.Text = $"ATK: {_playerAtk}";
+        CdText.Text = $"CD: {_playerCd:F1}s";
+        ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
+        ExpBar.Progress = (double)_playerExp / _expToNextLevel;
+
+        // 初始化显示正确的时间
+        TimeLabel.Text = Math.Ceiling(_timeRemaining).ToString();
+
+        _gameLoopTimer = Dispatcher.CreateTimer();
+        _gameLoopTimer.Interval = TimeSpan.FromMilliseconds(12);
+        _gameLoopTimer.Tick += GameLoop;
+    }
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -140,7 +183,29 @@ public partial class BattleFieldPage : ContentPage
 
     private void GameLoop(object? sender, EventArgs e)
     {
-        // ================= 0. FPS 性能统计 =================
+        // 核心修复：如果游戏已经结束，或者“处于暂停状态”，直接拦截循环！
+        if (_isGameOver || PausePanel.IsVisible) return;
+
+        // 倒计时逻辑更新
+        _timeRemaining -= 0.012; // 每次 Timer 触发是 12 毫秒
+        if (_timeRemaining <= 0)
+        {
+            _timeRemaining = 0;
+            TimeLabel.Text = "0";
+
+            // 时间归零且血量大于0 -> 触发胜利！
+            if (_playerHp > 0)
+            {
+                TriggerVictory();
+            }
+            return;
+        }
+        else
+        {
+            // 向上取整显示（比如 59.8 显示 60），保证视觉上平滑倒数
+            TimeLabel.Text = Math.Ceiling(_timeRemaining).ToString();
+        }
+        // 0. FPS 性能统计
         _fpsCount++;
         if ((DateTime.Now - _lastFpsTime).TotalSeconds >= 1.0)
         {
@@ -153,8 +218,8 @@ public partial class BattleFieldPage : ContentPage
         {
             _playerWorldX += _moveDirectionX * 5.0;
             _playerWorldY += _moveDirectionY * 5.0;
-            _playerWorldX = Math.Clamp(_playerWorldX, -725, 725);
-            _playerWorldY = Math.Clamp(_playerWorldY, -725, 725);
+            _playerWorldX = Math.Clamp(_playerWorldX, -722, 722);
+            _playerWorldY = Math.Clamp(_playerWorldY, -722, 722);
         }
 
         double screenWidth = this.Width > 0 ? this.Width : 400;
@@ -171,14 +236,12 @@ public partial class BattleFieldPage : ContentPage
         double cullDistX = (screenWidth / 2) + 100;
         double cullDistY = (screenHeight / 2) + 100;
 
-        // fix bug:获取当前屏幕真正的几何中心点（世界坐标）
-        // 因为前面定义了 cameraX = -playerX，所以 -cameraX 就是屏幕中心点
+        // 获取当前屏幕真正的几何中心点（世界坐标）
         double screenCenterX = -cameraX;
         double screenCenterY = -cameraY;
 
         // 2. 敌人生成
         _framesUntilNextSpawn--;
-        // 屏幕上的敌人 + 回收站的敌人，总数绝对不会无限制增长
         if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 50)
         {
             SpawnEnemy();
@@ -203,7 +266,6 @@ public partial class BattleFieldPage : ContentPage
             }
 
             // 视锥剔除
-            // fix：视锥剔除改为基于“屏幕中心screenCenterX”判断，而不是玩家
             if (Math.Abs(screenCenterX - enemy.WorldX) > cullDistX ||
                 Math.Abs(screenCenterY - enemy.WorldY) > cullDistY)
             {
@@ -215,9 +277,9 @@ public partial class BattleFieldPage : ContentPage
             }
 
             // 物理碰撞：主角碰到敌人
-            if (distSq < 40 * 40)
+            if (distSq < 1600)
             {
-                // 改为隐身并放入回收站！
+                // 改为隐身并放入回收站
                 enemy.UIContainer.IsVisible = false;
                 _deadEnemiesPool.Enqueue(enemy);
                 _enemiesList.RemoveAt(i);
@@ -233,7 +295,6 @@ public partial class BattleFieldPage : ContentPage
             double dx = _playerWorldX - gem.TranslationX;
             double dy = _playerWorldY - gem.TranslationY;
 
-            // fix：宝石的隐身同样基于屏幕中心
             gem.IsVisible = !(Math.Abs(screenCenterX - gem.TranslationX) > cullDistX ||
                               Math.Abs(screenCenterY - gem.TranslationY) > cullDistY);
 
@@ -302,7 +363,6 @@ public partial class BattleFieldPage : ContentPage
                     {
                         DropGem(enemy.WorldX, enemy.WorldY);
 
-                        // 【绝对不用 Remove】改为隐身并放入回收站！
                         enemy.UIContainer.IsVisible = false;
                         _deadEnemiesPool.Enqueue(enemy);
                         _enemiesList.RemoveAt(j);
@@ -316,7 +376,26 @@ public partial class BattleFieldPage : ContentPage
         }
     }
 
-    // ==================== 辅助方法 ====================
+    // 触发胜利方法
+    private async void TriggerVictory()
+    {
+        _isGameOver = true;
+        _gameLoopTimer.Stop();
+        BgmPlayer.Stop();
+
+        // 如果赢了，并且这局游戏之前存过档，就把它从数据库里彻底删除！
+        if (_currentSaveSessionId > 0)
+        {
+            var saveToDelete = Circle.ViewModels.CharacterViewModel.Current?.Characters?.FirstOrDefault(c => c.Id == _currentSaveSessionId);
+            if (saveToDelete != null)
+            {
+                Circle.ViewModels.CharacterViewModel.Current?.DeleteCharacter(saveToDelete);
+            }
+        }
+
+        await Task.Delay(300);
+        await Navigation.PushAsync(new VictoryPage());
+    }
 
     // 真正使用对象池的生成逻辑
     private void SpawnEnemy()
@@ -325,12 +404,11 @@ public partial class BattleFieldPage : ContentPage
         double y = _rand.Next(-725, 725);
         if ((x - _playerWorldX) * (x - _playerWorldX) + (y - _playerWorldY) * (y - _playerWorldY) < 150 * 150) return;
 
-        
+
         if (_deadEnemiesPool.Count > 0)
         {
             var recycledEnemy = _deadEnemiesPool.Dequeue();
 
-            // 重置状态：满血、血条拉满、更新坐标、取消隐身
             recycledEnemy.Hp = recycledEnemy.MaxHp;
             recycledEnemy.HpBar.ScaleX = 1.0;
             recycledEnemy.WorldX = x;
@@ -343,7 +421,6 @@ public partial class BattleFieldPage : ContentPage
         }
         else
         {
-            // 回收站空了（比如游戏刚开始），才真正消耗内存去 new 控件
             var hpBox = new BoxView
             {
                 Color = Colors.Red,
@@ -437,7 +514,7 @@ public partial class BattleFieldPage : ContentPage
 
     private async void TakeDamage(int amount)
     {
-        if (_playerHp <= 0) return;
+        if (_playerHp <= 0 || _isGameOver || PausePanel.IsVisible) return;
 
         _playerHp -= amount;
         ShowDamageText(amount);
@@ -445,6 +522,7 @@ public partial class BattleFieldPage : ContentPage
         if (_playerHp <= 0)
         {
             _playerHp = 0;
+            _isGameOver = true;
             HpText.Text = $"{_playerHp}/{_playerMaxHp}";
             HpBar.Progress = 0;
 
@@ -462,16 +540,207 @@ public partial class BattleFieldPage : ContentPage
         }
     }
 
+
     private void GainExp(int amount)
     {
+        if (_isGameOver || PausePanel.IsVisible) return;
+
         _playerExp += amount;
         if (_playerExp >= _expToNextLevel)
         {
             _playerExp -= _expToNextLevel;
             _playerLevel++;
             _expToNextLevel = 10 + (_playerLevel * 5);
+
+            _gameLoopTimer.Stop();
+
+            // 4选3
+            var allCards = new List<Border> { CardAtk, CardCd, CardHp, CardHeal };
+            foreach (var card in allCards)
+            {
+                card.IsVisible = false;
+            }
+
+            var selectedCards = allCards.OrderBy(x => _rand.Next()).Take(3).ToList();
+
+            for (int i = 0; i < selectedCards.Count; i++)
+            {
+                selectedCards[i].IsVisible = true;
+                Grid.SetColumn(selectedCards[i], i);
+            }
+
+            PauseButton.IsEnabled = false;
+            PauseButton.Opacity = 0.5;
+
+            LevelUpPanel.IsVisible = true;
         }
+
         ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
         ExpBar.Progress = (double)_playerExp / _expToNextLevel;
+    }
+
+
+    private int _selectedUpgradeType = 0;
+
+    private async void OnUpgradeAtkTapped(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await SelectCard(CardAtk, 1);
+    }
+
+    private async void OnUpgradeCdTapped(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await SelectCard(CardCd, 2);
+    }
+
+    private async void OnUpgradeHpTapped(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await SelectCard(CardHp, 3);
+    }
+
+    private async void OnUpgradeHealTapped(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await SelectCard(CardHeal, 4);
+    }
+
+    private async Task SelectCard(Border selectedCard, int upgradeType)
+    {
+        _selectedUpgradeType = upgradeType;
+
+        CardAtk.BackgroundColor = Color.Parse("#222222");
+        CardCd.BackgroundColor = Color.Parse("#222222");
+        CardHp.BackgroundColor = Color.Parse("#222222");
+        CardHeal.BackgroundColor = Color.Parse("#222222");
+
+        selectedCard.BackgroundColor = Color.Parse("#555555");
+
+        ConfirmUpgradeButton.IsEnabled = true;
+        ConfirmUpgradeButton.BackgroundColor = Colors.Green;
+
+        await selectedCard.ScaleToAsync(0.9, 100, Easing.CubicOut);
+        await selectedCard.ScaleToAsync(1.05, 100, Easing.CubicIn);
+        await selectedCard.ScaleToAsync(1.0, 100, Easing.SpringOut);
+    }
+
+    private void OnConfirmUpgradeClicked(object sender, EventArgs e)
+    {
+        if (_selectedUpgradeType == 1)
+        {
+            _playerAtk += 5;
+        }
+        else if (_selectedUpgradeType == 2)
+        {
+            _playerCd -= 0.2;
+            if (_playerCd < 0.2) _playerCd = 0.2;
+        }
+        else if (_selectedUpgradeType == 3)
+        {
+            _playerMaxHp += 10;
+            _playerHp += 10;
+        }
+        else if (_selectedUpgradeType == 4)
+        {
+            _playerHp += 30;
+            if (_playerHp > _playerMaxHp) _playerHp = _playerMaxHp;
+        }
+
+        AtkText.Text = $"ATK: {_playerAtk}";
+        CdText.Text = $"CD: {_playerCd:F1}s";
+        HpText.Text = $"{_playerHp}/{_playerMaxHp}";
+        HpBar.Progress = (double)_playerHp / _playerMaxHp;
+
+        var snapshot = new Circle.Models.PlayerSaveData
+        {
+            Id = _currentSaveSessionId,
+            Hp = _playerHp,
+            MaxHp = _playerMaxHp,
+            Atk = _playerAtk,
+            Cd = _playerCd,
+            Level = _playerLevel,
+            Exp = _playerExp,
+            TimeRemaining = _timeRemaining
+        };
+        Circle.ViewModels.CharacterViewModel.Current?.SaveCharacter(snapshot);
+
+
+        if (_currentSaveSessionId == 0)
+        {
+            _currentSaveSessionId = snapshot.Id;
+        }
+
+        LevelUpPanel.IsVisible = false;
+        _selectedUpgradeType = 0;
+        ConfirmUpgradeButton.IsEnabled = false;
+        ConfirmUpgradeButton.BackgroundColor = Colors.Gray;
+        CardAtk.BackgroundColor = Color.Parse("#222222");
+        CardCd.BackgroundColor = Color.Parse("#222222");
+        CardHp.BackgroundColor = Color.Parse("#222222");
+        CardHeal.BackgroundColor = Color.Parse("#222222");
+
+        PauseButton.IsEnabled = true;
+        PauseButton.Opacity = 1.0;
+
+        _gameLoopTimer.Start();
+    }
+
+    // ================= 🌟 暂停与交互方法 =================
+
+    private async void OnPauseClicked(object sender, EventArgs e)
+    {
+        if (_isGameOver) return;
+
+        SoundManager.PlayClick();
+        await PauseButton.ScaleToAsync(0.9, 100);
+        await PauseButton.ScaleToAsync(1.0, 100);
+
+        _gameLoopTimer.Stop();
+        BgmPlayer.Pause();
+
+        JoystickContainer.InputTransparent = true;
+        MapGrid.InputTransparent = true;
+
+        PausePanel.IsVisible = true;
+    }
+
+    private async void OnResumeClicked(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await ResumeBtn.ScaleToAsync(0.9, 100);
+        await ResumeBtn.ScaleToAsync(1.0, 100);
+
+        PausePanel.IsVisible = false;
+
+        JoystickContainer.InputTransparent = false;
+        MapGrid.InputTransparent = false;
+
+        BgmPlayer.Play();
+        _gameLoopTimer.Start();
+    }
+
+    private async void OnRestartInPauseClicked(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+        await RestartBtnInPause.ScaleToAsync(0.9, 100);
+        await RestartBtnInPause.ScaleToAsync(1.0, 100);
+
+        bool confirm = await DisplayAlertAsync("Restart Game", "Are you sure you want to restart?\nThis will DELETE your current session's save file!", "Delete & Restart", "Cancel");
+        if (!confirm) return;
+
+        _gameLoopTimer.Stop();
+        BgmPlayer.Stop();
+
+        if (_currentSaveSessionId > 0)
+        {
+            var saveToDelete = Circle.ViewModels.CharacterViewModel.Current?.Characters?.FirstOrDefault(c => c.Id == _currentSaveSessionId);
+            if (saveToDelete != null)
+            {
+                Circle.ViewModels.CharacterViewModel.Current?.DeleteCharacter(saveToDelete);
+            }
+        }
+
+        await Navigation.PushAsync(new ChooseCharacter());
     }
 }
