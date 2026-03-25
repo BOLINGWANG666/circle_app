@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Circle.Pages.VictoryPage"
+             BackgroundColor="#F5F5DC"
+             NavigationPage.HasNavigationBar="False"            
+             NavigationPage.HasBackButton="False">
+
+    <Grid>
+        <Label x:Name="VictoryLabel"
+               Text="VICTORY!"
+               FontSize="55"
+               TextColor="#32CD32" 
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Opacity="0"
+               TranslationY="100" />
+
+        <Grid VerticalOptions="End" Margin="20, 0, 20, 50" ColumnDefinitions="*, *" ColumnSpacing="15">
+
+            <Button x:Name="RestartButton"
+                    Grid.Column="0"
+                    Text="Restart"
+                    FontSize="20"
+                    TextColor="White"
+                    BackgroundColor="#333333"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    Opacity="0"
+                    Clicked="OnRestartClicked"
+                    IsEnabled="False"/>
+
+            <Button x:Name="MenuButton"
+                    Grid.Column="1"
+                    Text="Return to menu"
+                    FontSize="18"
+                    TextColor="White"
+                    BackgroundColor="#333333"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    Opacity="0"
+                    Clicked="OnMenuClicked"
+                    IsEnabled="False"/>
+        </Grid>
+    </Grid>
+</ContentPage>
