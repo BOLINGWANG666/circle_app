@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Circle.Pages.HowToPlayPage"
+             BackgroundColor="#F5F5DC"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowSpacing="15" Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center">
+            <Label Grid.Column="0" Text="How To Play" FontSize="28" FontAttributes="Bold" TextColor="#333333" VerticalOptions="Center" />
+            <Button Grid.Column="1" Text="Back" CornerRadius="10" BackgroundColor="#333333" TextColor="White" FontAttributes="Bold" Clicked="OnBackClicked" HeightRequest="40" Padding="15,0"/>
+        </Grid>
+
+        <Border Grid.Row="1" Stroke="Black" StrokeThickness="3" BackgroundColor="White" Padding="15">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <Grid>
+                <ScrollView x:Name="ContentScrollView" VerticalScrollBarVisibility="Never"
+                            Scrolled="OnScrollViewScrolled" SizeChanged="OnScrollViewSizeChanged">
+
+                    <Grid x:Name="ContentContainer">
+
+                        <VerticalStackLayout x:Name="Page1" IsVisible="True" Spacing="15" VerticalOptions="Center">
+                            <Label Text="Welcome to CIRCLE" FontSize="24" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                            <BoxView HeightRequest="2" Color="LightGray" Margin="0,5"/>
+                            <Label Text="Control your character using the on-screen joystick." FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" />
+                            <Label Text="Survive the endless waves of geometric enemies." FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" />
+                            <Label Text="Your character will automatically attack nearby targets." FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" />
+                            <Label Text="Dodge, collect gems, and build your ultimate combination!" FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" FontAttributes="Italic" />
+                            <Label Text="Tip: Level up for the first time to create your session's save file." FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" FontAttributes="Italic" />
+                            <Label Text="Stay within the geometric battlefield and survive!" FontSize="15" TextColor="#333333" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout x:Name="Page2" IsVisible="False" Spacing="20" VerticalOptions="Center">
+                            <Label Text="Battlefield Entities" FontSize="24" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                            <BoxView HeightRequest="2" Color="LightGray" Margin="0,0"/>
+
+                            <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="15" RowSpacing="20">
+                                <Grid Grid.Row="0" Grid.Column="0" WidthRequest="35" HeightRequest="35">
+                                    <Border Stroke="Transparent" WidthRequest="18" HeightRequest="18" Rotation="45" BackgroundColor="Blue" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Grid>
+                                <Label Grid.Row="0" Grid.Column="1" Text="EXP Gem : Dropped by enemies. Collect to level up." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+
+                                <Grid Grid.Row="1" Grid.Column="0" WidthRequest="35" HeightRequest="35">
+                                    <Border Stroke="Black" StrokeThickness="1" WidthRequest="18" HeightRequest="18" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <BoxView Color="Red" />
+                                    </Border>
+                                </Grid>
+                                <Label Grid.Row="1" Grid.Column="1" Text="Enemy Cube : Chases you relentlessly. Deals damage on touch." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+
+                                <Grid Grid.Row="2" Grid.Column="0" WidthRequest="35" HeightRequest="35">
+                                    <Border Stroke="Transparent" WidthRequest="18" HeightRequest="18" BackgroundColor="Gray" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="9"/>
+                                        </Border.StrokeShape>
+                                    </Border>
+                                </Grid>
+                                <Label Grid.Row="2" Grid.Column="1" Text="Player : That's you! Keep moving to stay alive." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout x:Name="Page3" IsVisible="False" Spacing="15" VerticalOptions="Center">
+                            <Label Text="Save System" FontSize="24" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                            <BoxView HeightRequest="2" Color="LightGray" Margin="0,5"/>
+                            <Label Text="• A new save file is created when you level up for the FIRST time." FontSize="15" TextColor="#333333" Margin="5,0"/>
+                            <Label Text="• Every subsequent level up will OVERWRITE your current session's save." FontSize="15" TextColor="#333333" Margin="5,0"/>
+                            <Label Text="• You can view, load, and delete your past saves in the 'Save File' menu." FontSize="15" TextColor="#333333" Margin="5,0"/>
+                            <Label Text="• Note: Dying does not delete your save, allowing you to try again!" FontSize="15" TextColor="#333333" FontAttributes="Italic" Margin="5,0"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout x:Name="Page4" IsVisible="False" Spacing="15" VerticalOptions="Center">
+                            <Label Text="Level Up &amp; Upgrades" FontSize="24" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                            <BoxView HeightRequest="2" Color="LightGray" Margin="0,5"/>
+                            <Label Text="Fill your EXP bar to level up and choose 1 of 3 random cards:" FontSize="15" TextColor="#333333" />
+
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, Auto, Auto, Auto" ColumnSpacing="10" RowSpacing="15" Margin="5,0,0,0">
+                                <Label Grid.Row="0" Grid.Column="0" Text="🗡️ ATK:" FontSize="15" FontAttributes="Bold" TextColor="#F57C00" VerticalOptions="Center"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="Increases attack damage." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+
+                                <Label Grid.Row="1" Grid.Column="0" Text="⏳ CD:" FontSize="15" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="Reduces cooldown speed." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="❤️ HP:" FontSize="15" FontAttributes="Bold" TextColor="#D32F2F" VerticalOptions="Center"/>
+                                <Label Grid.Row="2" Grid.Column="1" Text="Increases Max HP by 10." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+
+                                <Label Grid.Row="3" Grid.Column="0" Text="🩹 HEAL:" FontSize="15" FontAttributes="Bold" TextColor="Green" VerticalOptions="Center"/>
+                                <Label Grid.Row="3" Grid.Column="1" Text="Restores 30 lost HP." FontSize="15" TextColor="#333333" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout x:Name="Page5" IsVisible="False" Spacing="20" VerticalOptions="Center">
+                            <Label Text="Victory &amp; Defeat" FontSize="24" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                            <BoxView HeightRequest="2" Color="LightGray" Margin="0,5"/>
+
+                            <Border BackgroundColor="#E8F5E9" Stroke="Green" StrokeThickness="2" Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="🏆 VICTORY CONDITION" FontSize="18" FontAttributes="Bold" TextColor="Green" HorizontalOptions="Center"/>
+                                    <Label Text="Survive for 60 Seconds!" FontSize="15" TextColor="#333333" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border BackgroundColor="#FFEBEE" Stroke="Red" StrokeThickness="2" Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="💀 DEFEAT CONDITION" FontSize="18" FontAttributes="Bold" TextColor="Red" HorizontalOptions="Center"/>
+                                    <Label Text="Your HP drops to 0." FontSize="15" TextColor="#333333" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </ScrollView>
+
+                <Grid x:Name="ScrollDownHintLayer" IsVisible="False" Opacity="0.25" InputTransparent="True"
+                      VerticalOptions="End" HorizontalOptions="Center" Margin="0">
+                    <Label Text="▼" FontSize="22" TextColor="#888888" HorizontalOptions="Center" TranslationY="8" />
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*, 2*, *" ColumnSpacing="15" Margin="0,5,0,0">
+            <Button Grid.Column="0" Text="&lt;" FontAttributes="Bold" FontSize="24" BackgroundColor="#E0E0E0" TextColor="Black" CornerRadius="10" Padding="0" Clicked="OnPrevClicked" />
+
+            <Border Grid.Column="1" BackgroundColor="#EEEEEE" Stroke="Black" StrokeThickness="2">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10"/>
+                </Border.StrokeShape>
+                <Label x:Name="PageIndicator" Text="1 / 5" FontSize="20" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <Button Grid.Column="2" Text="&gt;" FontAttributes="Bold" FontSize="24" BackgroundColor="#E0E0E0" TextColor="Black" CornerRadius="10" Padding="0" Clicked="OnNextClicked" />
+        </Grid>
+
+    </Grid>
+</ContentPage>
