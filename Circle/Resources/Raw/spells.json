@@ -1,0 +1,34 @@
+﻿[
+  {
+    "Id": "atk_boost",
+    "Icon": "🗡️",
+    "Name": "ATK Boost",
+    "Description": "ATK + 5",
+    "EffectType": "Atk",
+    "Value": 5.0
+  },
+  {
+    "Id": "cd_reduce",
+    "Icon": "⏳",
+    "Name": "Cooldown",
+    "Description": "CD - 0.2s",
+    "EffectType": "Cd",
+    "Value": -0.2
+  },
+  {
+    "Id": "hp_up",
+    "Icon": "❤️",
+    "Name": "Vitality",
+    "Description": "MAX HP + 10",
+    "EffectType": "MaxHp",
+    "Value": 10.0
+  },
+  {
+    "Id": "heal_up",
+    "Icon": "💊",
+    "Name": "Recovery",
+    "Description": "Heal 30 HP",
+    "EffectType": "Heal",
+    "Value": 30.0
+  }
+]
