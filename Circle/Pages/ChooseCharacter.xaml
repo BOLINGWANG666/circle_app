@@ -18,7 +18,7 @@
 
         <Label Text="Please select your character"
                TextColor="#333333"
-               FontSize="30" 
+               FontSize="40" 
                FontAttributes="Bold"
                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                VerticalOptions="Center" />

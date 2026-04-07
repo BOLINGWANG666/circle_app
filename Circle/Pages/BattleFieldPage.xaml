@@ -8,45 +8,82 @@
              NavigationPage.HasNavigationBar="False"    
              NavigationPage.HasBackButton="False">
 
-    <Grid>
-        <BoxView Color="Black" HorizontalOptions="Fill" VerticalOptions="Fill" />
-        <toolkit:MediaElement x:Name="BgmPlayer" ShouldLoopPlayback="True" ShouldAutoPlay="True" WidthRequest="0" HeightRequest="0" Volume="0.1" />
 
-        <Grid x:Name="MapGrid" WidthRequest="1500" HeightRequest="1500" HorizontalOptions="Center" VerticalOptions="Center">
-            <Border BackgroundColor="#F5F5DC" Stroke="#333333" StrokeThickness="3" />
-            <Border x:Name="PlayerCircle" WidthRequest="50" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" Stroke="Transparent">
+    <Grid>
+
+        <BoxView Color="Black" HorizontalOptions="Fill" VerticalOptions="Fill" />
+
+        <toolkit:MediaElement x:Name="BgmPlayer"
+                              ShouldLoopPlayback="True"
+                              ShouldAutoPlay="True"
+                              WidthRequest="0"
+                              HeightRequest="0"
+                              Volume="0.1" />
+
+        <Grid x:Name="MapGrid" 
+              WidthRequest="1500" HeightRequest="1500"
+              HorizontalOptions="Center" VerticalOptions="Center">
+
+            <Border BackgroundColor="#F5F5DC" 
+                    Stroke="#333333" 
+                    StrokeThickness="3">
+            </Border>
+
+            <Border x:Name="PlayerCircle"
+                    WidthRequest="50" HeightRequest="50"
+                    HorizontalOptions="Center" VerticalOptions="Center"
+                    Stroke="Transparent">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="25" />
                 </Border.StrokeShape>
             </Border>
         </Grid>
 
-        <Border HorizontalOptions="Start" VerticalOptions="Start" Margin="20" Padding="15,10" BackgroundColor="#80000000" Stroke="Transparent">
+        <Border HorizontalOptions="Start" VerticalOptions="Start" 
+                Margin="20" Padding="15,10"
+                BackgroundColor="#80000000" Stroke="Transparent">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="10" />
             </Border.StrokeShape>
+
             <VerticalStackLayout Spacing="5">
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                     <Label Text="HP" FontAttributes="Bold" TextColor="White" FontSize="16" VerticalOptions="Center"/>
-                    <ProgressBar x:Name="HpBar" Progress="1.0" ProgressColor="#FF4C4C" WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
+                    <ProgressBar x:Name="HpBar" Progress="1.0" ProgressColor="#FF4C4C" 
+                                 WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
                     <Label x:Name="HpText" Text="???" TextColor="White" FontSize="14" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
+
                 <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
                     <Label x:Name="AtkText" Text="???" FontAttributes="Bold" TextColor="#FFA500" FontSize="14" />
                     <Label x:Name="CdText" Text="???" FontAttributes="Bold" TextColor="#00BFFF" FontSize="14" />
                 </HorizontalStackLayout>
+
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                     <Label Text="EXP" FontAttributes="Bold" TextColor="White" FontSize="15" VerticalOptions="Center"/>
-                    <ProgressBar x:Name="ExpBar" Progress="0.0" ProgressColor="#00BFFF" BackgroundColor="Black" WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
+                    <ProgressBar x:Name="ExpBar" Progress="0.0" ProgressColor="#00BFFF" BackgroundColor="Black"
+                                 WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
                     <Label x:Name="ExpText" Text="LV0 0/10" TextColor="White" FontSize="14" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
+
             </VerticalStackLayout>
         </Border>
 
-        <Label x:Name="TimeLabel" Text="60" TextColor="LimeGreen" FontAttributes="Bold" FontSize="45" HorizontalOptions="Center" VerticalOptions="Start" Margin="0, 20, 0, 0" />
+        <Label x:Name="TimeLabel"
+               Text="60"
+               TextColor="LimeGreen"
+               FontAttributes="Bold"
+               FontSize="45"
+               HorizontalOptions="Center"
+               VerticalOptions="Start"
+               Margin="0, 20, 0, 0" />
 
         <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start" Margin="0, 20, 20, 0" Spacing="10">
-            <Border x:Name="PauseButton" WidthRequest="45" HeightRequest="45" BackgroundColor="#80000000" Stroke="Transparent" VerticalOptions="Center">
+
+            <Border x:Name="PauseButton" 
+                    WidthRequest="45" HeightRequest="45" 
+                    BackgroundColor="#80000000" Stroke="Transparent"
+                    VerticalOptions="Center">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="10" />
                 </Border.StrokeShape>
@@ -55,20 +92,36 @@
                 </Border.GestureRecognizers>
                 <Label Text="||" TextColor="White" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Border>
-            <Label x:Name="FpsLabel" Text="FPS: 0" TextColor="Lime" FontAttributes="Bold" FontSize="18" VerticalOptions="Center"/>
+
+            <Label x:Name="FpsLabel"
+                   Text="FPS: 0"
+                   TextColor="Lime"
+                   FontAttributes="Bold"
+                   FontSize="18"
+                   VerticalOptions="Center"/>
         </HorizontalStackLayout>
 
+
         <Grid x:Name="JoystickContainer" HorizontalOptions="Start" VerticalOptions="End" Margin="40">
-            <Border WidthRequest="120" HeightRequest="120" BackgroundColor="Gray" Opacity="0.5" Stroke="Transparent" HorizontalOptions="Center" VerticalOptions="Center">
+            <Border WidthRequest="120" HeightRequest="120"
+                    BackgroundColor="Gray" Opacity="0.5" 
+                    Stroke="Transparent"
+                    HorizontalOptions="Center" VerticalOptions="Center">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="60" />
                 </Border.StrokeShape>
             </Border>
-            <Border x:Name="JoystickInner" WidthRequest="50" HeightRequest="50" BackgroundColor="LightGray" Stroke="Transparent" HorizontalOptions="Center" VerticalOptions="Center">
+
+            <Border x:Name="JoystickInner" 
+                    WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="LightGray" 
+                    Stroke="Transparent"
+                    HorizontalOptions="Center" VerticalOptions="Center">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="25" />
                 </Border.StrokeShape>
             </Border>
+
             <ContentView WidthRequest="180" HeightRequest="180" BackgroundColor="Transparent">
                 <ContentView.GestureRecognizers>
                     <PanGestureRecognizer PanUpdated="OnJoystickPanUpdated" />
@@ -76,12 +129,27 @@
             </ContentView>
         </Grid>
 
+
         <Grid x:Name="PausePanel" IsVisible="False" BackgroundColor="#66000000">
+
             <Grid Padding="10">
                 <Grid RowDefinitions="*, Auto" RowSpacing="20" HorizontalOptions="Fill" VerticalOptions="Fill">
-                    <Label Grid.Row="0" Text="PAUSE" TextColor="White" FontSize="48" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Margin="0, -100, 0, 0"/>
+
+                    <Label Grid.Row="0"
+                           Text="PAUSE" 
+                           TextColor="White" 
+                           FontSize="48" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"
+                           Margin="0, -100, 0, 0"/>
+
                     <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" HorizontalOptions="Fill" Margin="40, 0, 40, 60">
-                        <Border x:Name="RestartBtnInPause" Grid.Column="0" WidthRequest="80" HeightRequest="80" BackgroundColor="#E0E0E0" Stroke="Black" StrokeThickness="2">
+
+                        <Border x:Name="RestartBtnInPause"
+                                Grid.Column="0"
+                                WidthRequest="80" HeightRequest="80"
+                                BackgroundColor="#E0E0E0" Stroke="Black" StrokeThickness="2">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="40"/>
                             </Border.StrokeShape>
@@ -90,7 +158,11 @@
                             </Border.GestureRecognizers>
                             <Label Text="↺" FontSize="36" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
-                        <Border x:Name="ResumeBtn" Grid.Column="2" WidthRequest="80" HeightRequest="80" BackgroundColor="#4CAF50" Stroke="Black" StrokeThickness="2">
+
+                        <Border x:Name="ResumeBtn"
+                                Grid.Column="2"
+                                WidthRequest="80" HeightRequest="80"
+                                BackgroundColor="#4CAF50" Stroke="Black" StrokeThickness="2">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="40"/>
                             </Border.StrokeShape>
@@ -99,57 +171,84 @@
                             </Border.GestureRecognizers>
                             <Label Text="▶" FontSize="36" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" Margin="5,0,0,0"/>
                         </Border>
+
                     </Grid>
                 </Grid>
             </Grid>
         </Grid>
 
         <Grid x:Name="LevelUpPanel" IsVisible="False" BackgroundColor="#66000000" Padding="10">
+
             <ScrollView VerticalOptions="Center" VerticalScrollBarVisibility="Never">
+
                 <VerticalStackLayout Spacing="20" HorizontalOptions="Fill" Padding="0, 20">
+
                     <Label Text="LEVEL UP!" TextColor="Gold" FontSize="36" FontAttributes="Bold" HorizontalOptions="Center" />
                     <Label Text="Choose an Upgrade:" TextColor="White" FontSize="18" HorizontalOptions="Center"/>
 
                     <Grid x:Name="CardsContainer" ColumnDefinitions="*, *, *" ColumnSpacing="8" HorizontalOptions="Fill">
 
-                        <Border x:Name="Card1" Grid.Column="0" BackgroundColor="#222222" Stroke="Gray" StrokeThickness="2" Padding="5, 15">
+                        <Border x:Name="CardAtk" BackgroundColor="#222222" Stroke="Gold" StrokeThickness="2" Padding="5, 15">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnCardTapped" />
+                                <TapGestureRecognizer Tapped="OnUpgradeAtkTapped" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout VerticalOptions="Center" Spacing="8">
-                                <Label x:Name="Card1Icon" Text="?" FontSize="30" HorizontalOptions="Center" />
-                                <Label x:Name="Card1Name" Text="Name" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
-                                <Label x:Name="Card1Desc" Text="Desc" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="🗡️" FontSize="30" HorizontalOptions="Center" />
+                                <Label Text="ATK Boost" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="ATK + 5" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border x:Name="Card2" Grid.Column="1" BackgroundColor="#222222" Stroke="Gray" StrokeThickness="2" Padding="5, 15">
+                        <Border x:Name="CardCd" BackgroundColor="#222222" Stroke="#00BFFF" StrokeThickness="2" Padding="5, 15">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnCardTapped" />
+                                <TapGestureRecognizer Tapped="OnUpgradeCdTapped" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout VerticalOptions="Center" Spacing="8">
-                                <Label x:Name="Card2Icon" Text="?" FontSize="30" HorizontalOptions="Center" />
-                                <Label x:Name="Card2Name" Text="Name" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
-                                <Label x:Name="Card2Desc" Text="Desc" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="⏳" FontSize="30" HorizontalOptions="Center" />
+                                <Label Text="Cooldown" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="CD - 0.2s" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border x:Name="Card3" Grid.Column="2" BackgroundColor="#222222" Stroke="Gray" StrokeThickness="2" Padding="5, 15">
+                        <Border x:Name="CardHp" BackgroundColor="#222222" Stroke="#32CD32" StrokeThickness="2" Padding="5, 15">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnCardTapped" />
+                                <TapGestureRecognizer Tapped="OnUpgradeHpTapped" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout VerticalOptions="Center" Spacing="8">
-                                <Label x:Name="Card3Icon" Text="?" FontSize="30" HorizontalOptions="Center" />
-                                <Label x:Name="Card3Name" Text="Name" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
-                                <Label x:Name="Card3Desc" Text="Desc" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="❤️" FontSize="30" HorizontalOptions="Center" />
+                                <Label Text="Vitality" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="MAX HP + 10" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
                             </VerticalStackLayout>
                         </Border>
 
+                        <Border x:Name="CardHeal" BackgroundColor="#222222" Stroke="#FF69B4" StrokeThickness="2" Padding="5, 15">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnUpgradeHealTapped" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="8">
+                                <Label Text="🩹" FontSize="30" HorizontalOptions="Center" />
+                                <Label Text="Recovery" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                                <Label Text="Heal 30 HP" TextColor="LightGray" FontSize="11" HorizontalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Border>
                     </Grid>
 
-                    <Button x:Name="ConfirmUpgradeButton" Text="CONFIRM" IsEnabled="False" Padding="60, 15" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" Margin="0, 10, 0, 0" Clicked="OnConfirmUpgradeClicked" />
+                    <Button x:Name="ConfirmUpgradeButton" 
+                            Text="CONFIRM" 
+                            IsEnabled="False" 
+                            Padding="60, 15"
+                            BackgroundColor="Gray" 
+                            TextColor="White" 
+                            FontAttributes="Bold" 
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Margin="0, 10, 0, 0"
+                            Clicked="OnConfirmUpgradeClicked" />
                 </VerticalStackLayout>
+
             </ScrollView>
         </Grid>
     </Grid>
+    
+
 </ContentPage>

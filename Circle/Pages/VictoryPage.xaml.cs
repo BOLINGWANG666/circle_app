@@ -14,7 +14,7 @@ public partial class VictoryPage : ContentPage
         // 确保视图渲染完毕
         await Task.Delay(100);
 
-        // 播放动画
+        // 播放与失败界面一样丝滑的入场动画
         await Task.WhenAll(
             VictoryLabel.TranslateToAsync(0, 0, 1500, Easing.CubicOut),
             VictoryLabel.FadeToAsync(1, 1500, Easing.CubicOut)
