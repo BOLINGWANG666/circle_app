@@ -39,7 +39,7 @@ public partial class ChooseCharacter : ContentPage
             WarningLabel.IsVisible = false;
 
             //  2. 玩家点击这个角色时，立刻将其属性装载到状态变量中
-            _selectedHp = 100;                             
+            _selectedHp = 50;                             
             _selectedAtk = 15;
             _selectedCd = 1.2;
             _selectedColor = Colors.Gray;

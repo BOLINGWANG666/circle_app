@@ -283,12 +283,12 @@ public partial class BattleFieldPage : ContentPage
             }
         }
 
-
+        //小方形生成逻辑
         _framesUntilNextSpawn--;
-        if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 25)
+        if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 20)
         {
             SpawnEnemy();
-            _framesUntilNextSpawn = _rand.Next(15, 46);
+            _framesUntilNextSpawn = _rand.Next(40, 80);
         }
 
         // 新的怪物移动与碰撞逻辑 
@@ -349,6 +349,50 @@ public partial class BattleFieldPage : ContentPage
                 enemy.UIContainer.IsVisible = false;
             else
                 enemy.UIContainer.IsVisible = true;
+
+            // 重合的分离
+            double pushX = 0;
+            double pushY = 0;
+            double myRadius = enemy.IsBig ? 25.0 : 15.0;
+
+            for (int j = 0; j < _enemiesList.Count; j++)
+            {
+                if (i == j) continue;
+
+                var otherEnemy = _enemiesList[j];
+                double otherRadius = otherEnemy.IsBig ? 25.0 : 15.0;
+
+                double ex = enemy.WorldX - otherEnemy.WorldX;
+                double ey = enemy.WorldY - otherEnemy.WorldY;
+                double distSq = ex * ex + ey * ey;
+
+                double safeDist = myRadius + otherRadius;
+
+                // 只要发生重叠（距离小于安全距离）
+                if (distSq < safeDist * safeDist)
+                {
+                    // 1. 如果距离几乎为0，给一个随机方向的强震荡力打破平衡
+                    if (distSq < 0.001)
+                    {
+                        pushX += (_rand.NextDouble() - 0.5) * 10;
+                        pushY += (_rand.NextDouble() - 0.5) * 10;
+                    }
+                    else
+                    {
+                        // 2. 正常排斥：把排斥系数从 0.15 提升到了 0.5
+                        double dist = Math.Sqrt(distSq);
+                        double overlap = safeDist - dist;
+                        // 0.5 意味着怪物会被强行向外推挤重叠部分的一半，完美抵消 1.5 的追击速度
+                        pushX += (ex / dist) * overlap * 0.5;
+                        pushY += (ey / dist) * overlap * 0.5;
+                    }
+                }
+            }
+
+            enemy.WorldX += pushX;
+            enemy.WorldY += pushY;
+            
+
 
             // 碰撞玩家判定
             double pDx = _playerWorldX - enemy.WorldX;
@@ -566,10 +610,10 @@ public partial class BattleFieldPage : ContentPage
         double angle = _rand.NextDouble() * 2 * Math.PI;
         bigEnemy.MoveDirX = Math.Cos(angle);
         bigEnemy.MoveDirY = Math.Sin(angle);
-        bigEnemy.FramesUntilDirChange = _rand.Next(250, 417); // 3到5秒的时间更换方向
+        bigEnemy.FramesUntilDirChange = _rand.Next(84, 250); // 1到3秒的时间更换方向
 
-        // 初始化发射子弹的倒计时（2到5秒）
-        bigEnemy.FramesUntilNextShoot = _rand.Next(167, 417);
+        // 初始化发射子弹的倒计时（1到3秒）
+        bigEnemy.FramesUntilNextShoot = _rand.Next(84, 250);
 
         _enemiesList.Add(bigEnemy);
     }
