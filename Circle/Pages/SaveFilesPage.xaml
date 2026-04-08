@@ -60,6 +60,9 @@
                                     <Label Text="{Binding Slot1.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.Atk, StringFormat='ATK: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#F57C00" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot1.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot1.DodgeChance, StringFormat='DODGE: {0:P0}'}" FontSize="14" FontAttributes="Bold" TextColor="Teal" HorizontalOptions="Center"/>
+                                    
                                     <Label Text="{Binding Slot1.TimeRemaining, StringFormat='TIME: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="LimeGreen" HorizontalOptions="Center"/>
                                 </VerticalStackLayout>
                             </Border>
@@ -78,6 +81,7 @@
                                     <Label Text="{Binding Slot2.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot2.Atk, StringFormat='ATK: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#F57C00" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot2.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot2.DodgeChance, StringFormat='DODGE: {0:P0}'}" FontSize="14" FontAttributes="Bold" TextColor="Teal" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot2.TimeRemaining, StringFormat='TIME: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="LimeGreen" HorizontalOptions="Center"/>
                                 </VerticalStackLayout>
                             </Border>
@@ -96,6 +100,7 @@
                                     <Label Text="{Binding Slot3.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot3.Atk, StringFormat='ATK: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#F57C00" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot3.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot3.DodgeChance, StringFormat='DODGE: {0:P0}'}" FontSize="14" FontAttributes="Bold" TextColor="Teal" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot3.TimeRemaining, StringFormat='TIME: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="LimeGreen" HorizontalOptions="Center"/>
                                 </VerticalStackLayout>
                             </Border>

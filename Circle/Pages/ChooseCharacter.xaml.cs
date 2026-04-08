@@ -5,12 +5,14 @@ namespace Circle.Pages;
 
 public partial class ChooseCharacter : ContentPage
 {
-    private bool isSelected = false; 
+    private bool isSelected = false;
+    
 
     //  1. 定义类级别的“状态变量”，用来临时存储玩家选中的数据
     private int _selectedHp;
     private int _selectedAtk;
     private double _selectedCd;
+    private double _selectedDodge;
     private Color _selectedColor = Colors.Transparent;
 
     public ChooseCharacter()
@@ -42,8 +44,14 @@ public partial class ChooseCharacter : ContentPage
             _selectedHp = 50;                             
             _selectedAtk = 15;
             _selectedCd = 1.2;
+            _selectedDodge = 0.05;
             _selectedColor = Colors.Gray;
             // (如果是法师，这里可能是 Hp=60, Atk=25, Color=Blue)
+
+            HpLabel.Text = $"HP: {_selectedHp}";
+            AtkLabel.Text = $"ATK: {_selectedAtk}";
+            CdLabel.Text = $"CD: {_selectedCd:F1}s";
+            DodgeLabel.Text = $"DODGE: {_selectedDodge * 100:F0}%";
 
             await CharacterCircle.ScaleToAsync(1.1, 100, Easing.CubicOut);
             await CharacterCircle.ScaleToAsync(1.0, 100, Easing.CubicIn);

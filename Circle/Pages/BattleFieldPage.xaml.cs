@@ -20,6 +20,8 @@ public partial class BattleFieldPage : ContentPage
     private int _playerHp;
     private int _playerAtk;
     private double _playerCd;
+    private double _playerDodge; // 玩家当前的闪避率
+    private bool _isShowingMiss = false; // 防止 Miss 动画重叠
 
     private int _playerLevel = 0;
     private int _playerExp = 0;
@@ -109,6 +111,8 @@ public partial class BattleFieldPage : ContentPage
         HpBar.Progress = 1.0;
         AtkText.Text = $"ATK: {_playerAtk}";
         CdText.Text = $"CD: {_playerCd}s";
+        _playerDodge = 0.05; 
+        DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
         ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
         ExpBar.Progress = 0.0;
 
@@ -138,6 +142,8 @@ public partial class BattleFieldPage : ContentPage
         HpBar.Progress = (double)_playerHp / _playerMaxHp;
         AtkText.Text = $"ATK: {_playerAtk}";
         CdText.Text = $"CD: {_playerCd:F1}s";
+        _playerDodge = saveData.DodgeChance;
+        DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
         ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
         ExpBar.Progress = (double)_playerExp / _expToNextLevel;
         TimeLabel.Text = Math.Ceiling(_timeRemaining).ToString();
@@ -698,6 +704,17 @@ public partial class BattleFieldPage : ContentPage
     {
         if (_playerHp <= 0 || _isGameOver || PausePanel.IsVisible) return;
 
+
+        // 闪避判定逻辑
+        if (_rand.NextDouble() < _playerDodge)
+        {
+            ShowMissText(); // 触发 Miss 动画
+            return;         // 直接 return，免除后续的扣血和震动
+        }
+        // ======================================================
+
+        _playerHp -= amount;
+        ShowDamageText(amount);
         _playerHp -= amount;
         ShowDamageText(amount);
 
@@ -735,6 +752,24 @@ public partial class BattleFieldPage : ContentPage
             HpText.Text = $"{_playerHp}/{_playerMaxHp}";
             HpBar.Progress = (double)_playerHp / _playerMaxHp;
         }
+    }
+
+    private async void ShowMissText()
+    {
+        // 防止屏幕被 Miss 刷屏重叠
+        if (_isShowingMiss) return;
+        _isShowingMiss = true;
+
+        var missLabel = new Label { Text = "Miss", TextColor = Colors.LimeGreen, FontAttributes = FontAttributes.Bold, FontSize = 22, HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, TranslationX = _playerWorldX, TranslationY = _playerWorldY - 30 };
+        MapGrid.Children.Add(missLabel);
+
+        _ = missLabel.TranslateToAsync(missLabel.TranslationX, missLabel.TranslationY - 50, 600, Easing.CubicOut);
+        await missLabel.FadeToAsync(0, 600, Easing.CubicIn);
+
+        MapGrid.Children.Remove(missLabel);
+
+        // 动画完全消失后，解锁允许下一次显示
+        _isShowingMiss = false;
     }
 
     private void GainExp(int amount)
@@ -825,6 +860,9 @@ public partial class BattleFieldPage : ContentPage
                 _playerMaxHp += (int)_selectedSpell.Value;
                 _playerHp += (int)_selectedSpell.Value;
                 break;
+            case "Dodge":
+                _playerDodge += _selectedSpell.Value; 
+                break;
             case "Heal":
                 _playerHp += (int)_selectedSpell.Value;
                 if (_playerHp > _playerMaxHp) _playerHp = _playerMaxHp;
@@ -832,6 +870,7 @@ public partial class BattleFieldPage : ContentPage
         }
 
         AtkText.Text = $"ATK: {_playerAtk}";
+        DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
         CdText.Text = $"CD: {_playerCd:F1}s";
         HpText.Text = $"{_playerHp}/{_playerMaxHp}";
         HpBar.Progress = (double)_playerHp / _playerMaxHp;
@@ -843,6 +882,7 @@ public partial class BattleFieldPage : ContentPage
             MaxHp = _playerMaxHp,
             Atk = _playerAtk,
             Cd = _playerCd,
+            DodgeChance = _playerDodge,
             Level = _playerLevel,
             Exp = _playerExp,
             TimeRemaining = _timeRemaining
