@@ -60,7 +60,6 @@
                                     <Label Text="{Binding Slot1.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.Atk, StringFormat='ATK: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#F57C00" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
-                                    <Label Text="{Binding Slot1.Cd, StringFormat='CD: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="#1976D2" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.DodgeChance, StringFormat='DODGE: {0:P0}'}" FontSize="14" FontAttributes="Bold" TextColor="Teal" HorizontalOptions="Center"/>
                                     
                                     <Label Text="{Binding Slot1.TimeRemaining, StringFormat='TIME: {0:F1}s'}" FontSize="14" FontAttributes="Bold" TextColor="LimeGreen" HorizontalOptions="Center"/>
