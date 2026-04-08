@@ -80,8 +80,20 @@
             <Grid Padding="10">
                 <Grid RowDefinitions="*, Auto" RowSpacing="20" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <Label Grid.Row="0" Text="PAUSE" TextColor="White" FontSize="48" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Margin="0, -100, 0, 0"/>
-                    <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" HorizontalOptions="Fill" Margin="40, 0, 40, 60">
-                        <Border x:Name="RestartBtnInPause" Grid.Column="0" WidthRequest="80" HeightRequest="80" BackgroundColor="#E0E0E0" Stroke="Black" StrokeThickness="2">
+
+                    <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto, *, Auto" HorizontalOptions="Fill" Margin="40, 0, 40, 60">
+
+                        <Border x:Name="QuitBtnInPause" Grid.Column="0" WidthRequest="80" HeightRequest="80" BackgroundColor="#F44336" Stroke="Black" StrokeThickness="2">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="40"/>
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQuitInPauseClicked" />
+                            </Border.GestureRecognizers>
+                            <Label Text="X" FontSize="36" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+
+                        <Border x:Name="RestartBtnInPause" Grid.Column="2" WidthRequest="80" HeightRequest="80" BackgroundColor="#E0E0E0" Stroke="Black" StrokeThickness="2">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="40"/>
                             </Border.StrokeShape>
@@ -90,7 +102,8 @@
                             </Border.GestureRecognizers>
                             <Label Text="↺" FontSize="36" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
-                        <Border x:Name="ResumeBtn" Grid.Column="2" WidthRequest="80" HeightRequest="80" BackgroundColor="#4CAF50" Stroke="Black" StrokeThickness="2">
+
+                        <Border x:Name="ResumeBtn" Grid.Column="4" WidthRequest="80" HeightRequest="80" BackgroundColor="#4CAF50" Stroke="Black" StrokeThickness="2">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="40"/>
                             </Border.StrokeShape>

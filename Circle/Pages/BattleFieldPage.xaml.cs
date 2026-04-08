@@ -528,7 +528,7 @@ public partial class BattleFieldPage : ContentPage
     {
         if (_selectedSpell == null) return;
 
-        // 动态计算属性，不再写死！
+        // 动态计算属性，不再写死
         switch (_selectedSpell.EffectType)
         {
             case "Atk":
@@ -628,5 +628,27 @@ public partial class BattleFieldPage : ContentPage
         }
 
         await Navigation.PushAsync(new ChooseCharacter());
+    }
+
+    // 点击暂停面板左侧的“退出”直接停止应用进程
+    private async void OnQuitInPauseClicked(object sender, EventArgs e)
+    {
+        SoundManager.PlayClick();
+
+        
+        if (this.FindByName<Border>("QuitBtnInPause") is Border quitBtn)
+        {
+            await quitBtn.ScaleToAsync(0.9, 100);
+            await quitBtn.ScaleToAsync(1.0, 100);
+        }
+
+        bool confirm = await DisplayAlertAsync("Exit Game", "Are you sure you want to exit entirely?\nYour progress is safely stored.", "Exit", "Cancel");
+        if (!confirm) return;
+
+        _gameLoopTimer.Stop();
+        BgmPlayer.Stop();
+
+        // 强行关闭进程，退出应用
+        Application.Current?.Quit();
     }
 }
