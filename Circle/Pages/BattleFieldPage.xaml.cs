@@ -44,7 +44,28 @@ public partial class BattleFieldPage : ContentPage
         public double WorldY { get; set; }
         public int Hp { get; set; }
         public int MaxHp { get; set; }
+
+        // 区分大红方块和普通小红方块
+        public bool IsBig { get; set; } = false;
+        // 大红方块的移动方向和转向计时器
+        public double MoveDirX { get; set; }
+        public double MoveDirY { get; set; }
+        public int FramesUntilDirChange { get; set; }
+
+        public int FramesUntilNextShoot { get; set; }
     }
+
+    // 子弹的数据结构与对象池 
+    private class ProjectileInfo
+    {
+        public required Border UIContainer { get; set; }
+        public double WorldX { get; set; }
+        public double WorldY { get; set; }
+        public double MoveDirX { get; set; }
+        public double MoveDirY { get; set; }
+    }
+    private List<ProjectileInfo> _activeProjectiles = new List<ProjectileInfo>();
+    private Queue<ProjectileInfo> _deadProjectilesPool = new Queue<ProjectileInfo>();
 
     private class AttackWave
     {
@@ -60,6 +81,12 @@ public partial class BattleFieldPage : ContentPage
     private List<AttackWave> _activeWaves = new List<AttackWave>();
     private List<BoxView> _gems = new List<BoxView>();
     private Queue<EnemyInfo> _deadEnemiesPool = new Queue<EnemyInfo>();
+
+    // 大红方块专属的对象池和计时器
+    private Queue<EnemyInfo> _deadBigEnemiesPool = new Queue<EnemyInfo>();
+    private bool _bigEnemiesInitialized = false;
+    private int _framesUntilNextBigSpawn = 0;
+
     private int _currentSaveSessionId = 0;
 
     // JSON 数据管理核心变量
@@ -230,39 +257,157 @@ public partial class BattleFieldPage : ContentPage
         double screenCenterX = -cameraX;
         double screenCenterY = -cameraY;
 
+        // 40秒后初始化大红方块对象池 
+        if (_timeRemaining <= 40.0 && !_bigEnemiesInitialized)
+        {
+            _bigEnemiesInitialized = true;
+            _framesUntilNextBigSpawn = _rand.Next(167, 334); // 2到4秒
+
+            for (int i = 0; i < 15; i++)
+            {
+                var hpBox = new BoxView { Color = Colors.DarkRed, WidthRequest = 50, HeightRequest = 50, ScaleX = 1.0, AnchorX = 0 };
+                var container = new Border { WidthRequest = 50, HeightRequest = 50, Stroke = Colors.Black, StrokeThickness = 2, BackgroundColor = Colors.Transparent, HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, IsVisible = false, Content = hpBox };
+                MapGrid.Children.Add(container);
+                _deadBigEnemiesPool.Enqueue(new EnemyInfo { UIContainer = container, HpBar = hpBox, WorldX = 0, WorldY = 0, Hp = 60, MaxHp = 60, IsBig = true });
+            }
+        }
+
+        // 处理大红方块的生成倒计时 
+        if (_bigEnemiesInitialized)
+        {
+            _framesUntilNextBigSpawn--;
+            if (_framesUntilNextBigSpawn <= 0 && _deadBigEnemiesPool.Count > 0)
+            {
+                SpawnBigEnemy();
+                _framesUntilNextBigSpawn = _rand.Next(167, 334);
+            }
+        }
+
+
         _framesUntilNextSpawn--;
-        if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 50)
+        if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 25)
         {
             SpawnEnemy();
             _framesUntilNextSpawn = _rand.Next(15, 46);
         }
 
+        // 新的怪物移动与碰撞逻辑 
         for (int i = _enemiesList.Count - 1; i >= 0; i--)
         {
             var enemy = _enemiesList[i];
-            double dx = _playerWorldX - enemy.WorldX;
-            double dy = _playerWorldY - enemy.WorldY;
-            double distSq = dx * dx + dy * dy;
 
-            if (distSq > 0.1)
+            if (enemy.IsBig)
             {
-                double dist = Math.Sqrt(distSq);
-                enemy.WorldX += (dx / dist) * 1.5;
-                enemy.WorldY += (dy / dist) * 1.5;
-                enemy.UIContainer.TranslationX = enemy.WorldX;
-                enemy.UIContainer.TranslationY = enemy.WorldY;
+                // 大红方块移动逻辑：随机游走 + 碰壁反弹
+                enemy.FramesUntilDirChange--;
+                if (enemy.FramesUntilDirChange <= 0)
+                {
+                    double angle = _rand.NextDouble() * 2 * Math.PI;
+                    enemy.MoveDirX = Math.Cos(angle);
+                    enemy.MoveDirY = Math.Sin(angle);
+                    enemy.FramesUntilDirChange = _rand.Next(250, 417); // 3到5秒换向
+                }
+
+                enemy.WorldX += enemy.MoveDirX * 2.0;
+                enemy.WorldY += enemy.MoveDirY * 2.0;
+
+                // 碰到地图边缘反弹
+                if (enemy.WorldX < -725 || enemy.WorldX > 725) { enemy.MoveDirX *= -1; enemy.WorldX = Math.Clamp(enemy.WorldX, -725, 725); }
+                if (enemy.WorldY < -725 || enemy.WorldY > 725) { enemy.MoveDirY *= -1; enemy.WorldY = Math.Clamp(enemy.WorldY, -725, 725); }
+                
+                
+                // 大怪射击倒计时控制 
+                enemy.FramesUntilNextShoot--;
+                if (enemy.FramesUntilNextShoot <= 0)
+                {
+                    // 在大怪当前的位置生成一颗子弹
+                    SpawnProjectile(enemy.WorldX, enemy.WorldY);
+                    // 重置下一次开火的时间为 1到 3秒
+                    enemy.FramesUntilNextShoot = _rand.Next(84, 250);
+                }
+            }
+            else
+            {
+                // 普通小红方块移动逻辑：追逐玩家
+                double dx = _playerWorldX - enemy.WorldX;
+                double dy = _playerWorldY - enemy.WorldY;
+                double distSqToPlayer = dx * dx + dy * dy;
+
+                if (distSqToPlayer > 0.1)
+                {
+                    double distToPlayer = Math.Sqrt(distSqToPlayer);
+                    enemy.WorldX += (dx / distToPlayer) * 1.5;
+                    enemy.WorldY += (dy / distToPlayer) * 1.5;
+                }
             }
 
+            enemy.UIContainer.TranslationX = enemy.WorldX;
+            enemy.UIContainer.TranslationY = enemy.WorldY;
+
+            // 视锥剔除控制显示
             if (Math.Abs(screenCenterX - enemy.WorldX) > cullDistX || Math.Abs(screenCenterY - enemy.WorldY) > cullDistY)
                 enemy.UIContainer.IsVisible = false;
             else
                 enemy.UIContainer.IsVisible = true;
 
-            if (distSq < 1600)
+            // 碰撞玩家判定
+            double pDx = _playerWorldX - enemy.WorldX;
+            double pDy = _playerWorldY - enemy.WorldY;
+            double pDistSq = pDx * pDx + pDy * pDy;
+
+            // 大方块体型大，碰撞判定范围相应增大
+            double collisionThreshold = enemy.IsBig ? 2500 : 1600;
+
+            if (pDistSq < collisionThreshold)
             {
                 enemy.UIContainer.IsVisible = false;
-                _deadEnemiesPool.Enqueue(enemy);
+
+                // 死亡后放回各自正确的对象池
+                if (enemy.IsBig) _deadBigEnemiesPool.Enqueue(enemy);
+                else _deadEnemiesPool.Enqueue(enemy);
+
                 _enemiesList.RemoveAt(i);
+
+                // 大怪扣 20 滴血，小怪扣 5 滴血
+                TakeDamage(enemy.IsBig ? 20 : 5);
+            }
+        }
+
+        // 子弹的飞行、边界消失与碰撞判定 
+        for (int i = _activeProjectiles.Count - 1; i >= 0; i--)
+        {
+            var proj = _activeProjectiles[i];
+
+            // 1. 子弹飞行（速度设定为 3.5）
+            proj.WorldX += proj.MoveDirX * 3.5;
+            proj.WorldY += proj.MoveDirY * 3.5;
+            proj.UIContainer.TranslationX = proj.WorldX;
+            proj.UIContainer.TranslationY = proj.WorldY;
+
+            // 2. 如果碰到地图边缘，直接消失并回收
+            if (proj.WorldX < -725 || proj.WorldX > 725 || proj.WorldY < -725 || proj.WorldY > 725)
+            {
+                proj.UIContainer.IsVisible = false;
+                _deadProjectilesPool.Enqueue(proj);
+                _activeProjectiles.RemoveAt(i);
+                continue;
+            }
+
+            // 3. 检测是否打中玩家
+            double pDx = _playerWorldX - proj.WorldX;
+            double pDy = _playerWorldY - proj.WorldY;
+            double pDistSq = pDx * pDx + pDy * pDy;
+
+            // 玩家圆圈半径25，子弹半径10
+            
+            if (pDistSq < 900)
+            {
+                // 打中玩家后子弹消失回收
+                proj.UIContainer.IsVisible = false;
+                _deadProjectilesPool.Enqueue(proj);
+                _activeProjectiles.RemoveAt(i);
+
+                // 触发玩家扣除 5 点血和震动反馈
                 TakeDamage(5);
             }
         }
@@ -332,12 +477,18 @@ public partial class BattleFieldPage : ContentPage
                     {
                         DropGem(enemy.WorldX, enemy.WorldY);
                         enemy.UIContainer.IsVisible = false;
-                        _deadEnemiesPool.Enqueue(enemy);
+
+                        // 打死大方块放回大方块池，打死小方块放回小方块池
+                        if (enemy.IsBig) _deadBigEnemiesPool.Enqueue(enemy);
+                        else _deadEnemiesPool.Enqueue(enemy);
+
                         _enemiesList.RemoveAt(j);
                     }
+
                     else
                     {
-                        enemy.HpBar.ScaleX = (double)enemy.Hp / enemy.MaxHp;
+                        // 如果怪物没死，根据剩余血量比例动态缩放红色血条
+                        enemy.HpBar.ScaleX = Math.Max(0, (double)enemy.Hp / enemy.MaxHp);
                     }
                 }
             }
@@ -386,6 +537,94 @@ public partial class BattleFieldPage : ContentPage
             _enemiesList.Add(new EnemyInfo { UIContainer = container, HpBar = hpBox, WorldX = x, WorldY = y, Hp = 30, MaxHp = 30 });
         }
     }
+
+
+    // 专门生成随机游走的大红方块 
+    private void SpawnBigEnemy()
+    {
+        double x, y;
+        do
+        {
+            x = _rand.Next(-700, 700);
+            y = _rand.Next(-700, 700);
+        }
+        // 保证出生点不要太靠近玩家 
+        while ((x - _playerWorldX) * (x - _playerWorldX) + (y - _playerWorldY) * (y - _playerWorldY) < 40000);
+
+        var bigEnemy = _deadBigEnemiesPool.Dequeue();
+
+        // 重置大红方块的属性
+        bigEnemy.Hp = bigEnemy.MaxHp;
+        bigEnemy.HpBar.ScaleX = 1.0;
+        bigEnemy.WorldX = x;
+        bigEnemy.WorldY = y;
+        bigEnemy.UIContainer.TranslationX = x;
+        bigEnemy.UIContainer.TranslationY = y;
+        bigEnemy.UIContainer.IsVisible = true;
+
+        // 随机给一个初始的运动方向角度
+        double angle = _rand.NextDouble() * 2 * Math.PI;
+        bigEnemy.MoveDirX = Math.Cos(angle);
+        bigEnemy.MoveDirY = Math.Sin(angle);
+        bigEnemy.FramesUntilDirChange = _rand.Next(250, 417); // 3到5秒的时间更换方向
+
+        // 初始化发射子弹的倒计时（2到5秒）
+        bigEnemy.FramesUntilNextShoot = _rand.Next(167, 417);
+
+        _enemiesList.Add(bigEnemy);
+    }
+
+    // 生成红色圆形子弹的方法 
+    private void SpawnProjectile(double startX, double startY)
+    {
+        // 随机一个 360 度的发射方向
+        double angle = _rand.NextDouble() * 2 * Math.PI;
+        double dirX = Math.Cos(angle);
+        double dirY = Math.Sin(angle);
+
+        if (_deadProjectilesPool.Count > 0)
+        {
+            // 从回收池复用子弹
+            var proj = _deadProjectilesPool.Dequeue();
+            proj.WorldX = startX;
+            proj.WorldY = startY;
+            proj.MoveDirX = dirX;
+            proj.MoveDirY = dirY;
+            proj.UIContainer.TranslationX = startX;
+            proj.UIContainer.TranslationY = startY;
+            proj.UIContainer.IsVisible = true;
+            _activeProjectiles.Add(proj);
+        }
+        else
+        {
+            // 新建一个红色圆形带黑色边框
+            var ui = new Border
+            {
+                WidthRequest = 20,
+                HeightRequest = 20,
+                BackgroundColor = Colors.Red,
+                Stroke = Colors.Black,
+                StrokeThickness = 2,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                TranslationX = startX,
+                TranslationY = startY
+            };
+            // 设置圆角为宽度的一半（10），使其变成完美的圆形
+            ui.StrokeShape = new RoundRectangle { CornerRadius = 10 };
+            MapGrid.Children.Add(ui);
+
+            _activeProjectiles.Add(new ProjectileInfo
+            {
+                UIContainer = ui,
+                WorldX = startX,
+                WorldY = startY,
+                MoveDirX = dirX,
+                MoveDirY = dirY
+            });
+        }
+    }
+
 
     private void SpawnAttackWave()
     {
