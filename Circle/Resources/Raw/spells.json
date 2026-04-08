@@ -30,5 +30,13 @@
     "Description": "Heal 30 HP",
     "EffectType": "Heal",
     "Value": 30.0
+  },
+  {
+    "Id": "dodge_up",
+    "Icon": "💨",
+    "Name": "Agility",
+    "Description": "DODGE + 3%",
+    "EffectType": "Dodge",
+    "Value": 0.03
   }
 ]

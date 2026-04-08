@@ -34,6 +34,7 @@
                 <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
                     <Label x:Name="AtkText" Text="???" FontAttributes="Bold" TextColor="#FFA500" FontSize="14" />
                     <Label x:Name="CdText" Text="???" FontAttributes="Bold" TextColor="#00BFFF" FontSize="14" />
+                    <Label x:Name="DodgeText" Text="???" FontAttributes="Bold" TextColor="Aqua" FontSize="14" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                     <Label Text="EXP" FontAttributes="Bold" TextColor="White" FontSize="15" VerticalOptions="Center"/>

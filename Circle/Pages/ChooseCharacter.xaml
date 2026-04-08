@@ -32,6 +32,8 @@
             <Label x:Name="AtkLabel" Text="ATK: 15" TextColor="DarkRed" FontSize="20" FontAttributes="Bold" />
             
             <Label x:Name="CdLabel" Text="CD: 1.2s" TextColor="DarkBlue" FontSize="20" FontAttributes="Bold" />
+
+            <Label x:Name="DodgeLabel" Text="DODGE: 5%" TextColor="Teal" FontSize="20" FontAttributes="Bold" />
         </VerticalStackLayout>
 
         <Border Grid.Row="1" Grid.Column="0" 
