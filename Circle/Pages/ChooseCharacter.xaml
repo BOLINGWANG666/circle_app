@@ -27,7 +27,7 @@
                              IsVisible="False"
                              Grid.Row="0" Grid.Column="2"
                              VerticalOptions="Center" HorizontalOptions="Center">
-            <Label x:Name="HpLabel" Text="HP: 100" TextColor="DarkGreen" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="HpLabel" Text="HP: 50" TextColor="DarkGreen" FontSize="20" FontAttributes="Bold" />
             
             <Label x:Name="AtkLabel" Text="ATK: 15" TextColor="DarkRed" FontSize="20" FontAttributes="Bold" />
             
