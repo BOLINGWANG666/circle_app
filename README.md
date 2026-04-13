@@ -27,7 +27,7 @@ Circle is a high-intensity 2D action game where you navigate a hero through endl
 1.  **Pick a Hero:** Tap the avatar icon to check their starting stats and confirm.
 2.  **Move Around:** Drag the virtual joystick to steer clear of the red squares.
 3.  **Grow Stronger:** Gather blue diamonds to fill your experience bar. Upon leveling up, select one of three random cards to boost your power.
-4.  **Stay Alive:** Avoid the energy blasts and survive until the clock runs out!
+4.  **Stay Alive:** Avoid the enemies and survive until the clock runs out!
 
 ## 🔗 Repository
 [https://github.com/BOLINGWANG666/circle_app](https://github.com/BOLINGWANG666/circle_app)
