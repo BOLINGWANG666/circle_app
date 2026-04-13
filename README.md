@@ -3,31 +3,31 @@
 **Developer:** WANG FUMING  
 **Framework:** .NET MAUI (C#)
 
-Circle is a high-intensity 2D survival action game where players must navigate a character through swarms of geometric enemies. Level up, choose your upgrades wisely, and survive the bullet-hell chaos.
+Circle is a high-intensity 2D action game where you navigate a hero through endless waves of geometric foes. Gain experience, pick the right upgrades, and survive the bullet-hell chaos.
 
-## Key Features
+##  Key Features
 
-* **Comprehensive Save & Load System:** Features a robust persistence layer using **SQLite**. [cite_start]The game automatically snapshots player progress, including HP, ATK, CD, Dodge chance, Level, and remaining time, allowing for seamless session recovery.
-* **Data-Driven Architecture (JSON):** All spell and skill data are decoupled from core logic and managed via a centralized **JSON structure**. [cite_start]This allows for rapid balancing and high scalability of the upgrade system.
-* [cite_start]**Deep Combat Mechanics:** * **Dodge System:** Implemented a statistical dodge mechanic (initial 5% + upgrades) with visual "Miss" feedback to enhance survivability.
-    * [cite_start]**Elite Enemy AI:** Added large elite enemies that fire **projectiles** to prevent simple kiting strategies and force active repositioning.
-* **Advanced Physics & Swarm AI:** Utilizes an **elastic repulsion algorithm** to prevent enemy overlapping. [cite_start]This ensures that enemy swarms move organically and maintain consistent hitbox density.
-* [cite_start]**Character Selection:** A dedicated selection screen where players can preview unique character stats (HP, ATK, CD, and Dodge) before starting the battle.
-* **HCI-Optimized UX:** Includes a graceful **Pause and Quit** system. [cite_start]The native "Exit" button ensures the game state is properly handled and saved according to Human-Computer Interaction principles.
+* **Session Persistence:** Powered by SQLite, the game constantly records your ongoing run. Your health, attack power, cooldowns, evasion rate, and remaining time are securely stored so you can pick up exactly where you left off.
+* **JSON Configured Abilities:** The stats for upgrades and skills are separated from the main codebase. Using a centralized JSON configuration makes it incredibly easy to balance the game and add new powers in the future.
+* **Engaging Combat:** * **Evasion:** A probability-based dodge feature (starting at 5%) provides visual "Miss" indicators, adding a layer of luck and survivability.
+    * **Ranged Foes:** Large elite targets will shoot energy blasts at you. This forces you to stay on the move rather than just dragging melee enemies in a big circle.
+* **Anti-Clumping Physics:** A customized mathematical repulsion formula stops enemies from stacking on top of one another. They push each other apart to form a natural, organic swarm.
+* **Pre-Battle Setup:** A clean interface lets you preview the starting attributes of different heroes before diving into the action.
+* **Safe Exit System:** Built with good Human-Computer Interaction in mind, the pause menu features a dedicated exit button that safely wraps up your session instead of forcing a hard app closure.
 
-## Technical Stack
+##  Technical Stack
 
 * **Language:** C# 11 / .NET 8
-* **Frontend:** XAML (MAUI) with custom graphics rendering for entities and particles.
-* [cite_start]**State Management:** Frame-based game loop (12ms interval) with high-performance object pooling for enemies and projectiles.
-* [cite_start]**Storage:** SQLite for persistent save slots and JSON for static game data.
+* **UI & Rendering:** XAML (MAUI) combined with dynamic code-behind for rendering entities and hit-texts.
+* **Performance:** Uses a custom twelve-millisecond update loop, paired with object pools for both the geometric foes and their energy blasts to maintain smooth framerates.
+* **Data Storage:** SQLite handles the save slots, while JSON manages the static game configurations.
 
-## How to Play
+##  How to Play
 
-1.  [cite_start]**Character Select:** Click on the character circle to view stats and confirm your choice.
-2.  [cite_start]**Movement:** Use the dynamic on-screen joystick to navigate the battlefield[cite: 28, 29].
-3.  **Upgrades:** Collect blue gems to level up. [cite_start]Choose one of three random cards (Atk, CD, Heal, or Dodge) to strengthen your build[cite: 41, 54].
-4.  [cite_start]**Survival:** Dodge enemy projectiles and survive until the timer reaches zero[cite: 24].
+1.  **Pick a Hero:** Tap the avatar icon to check their starting stats and confirm.
+2.  **Move Around:** Drag the virtual joystick to steer clear of the red squares.
+3.  **Grow Stronger:** Gather blue diamonds to fill your experience bar. Upon leveling up, select one of three random cards to boost your power.
+4.  **Stay Alive:** Avoid the energy blasts and survive until the clock runs out!
 
 ## 🔗 Repository
 [https://github.com/BOLINGWANG666/circle_app](https://github.com/BOLINGWANG666/circle_app)
