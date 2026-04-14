@@ -9,12 +9,26 @@
     <Grid RowDefinitions="*, *, *" ColumnDefinitions="*, *, *" Padding="30">
 
         <toolkit:MediaElement x:Name="AudioPlayer"
-                              Source="tapstart.mp3"
+                              Source="BottonSound.mp3"
                               ShouldAutoPlay="False"
                               Opacity="0"
                               WidthRequest="1"
                               HeightRequest="1"
                               Volume="1.0" />
+
+        <Button x:Name="BackButton"
+                Text="&#x25C0; Back"
+                Grid.Row="0" Grid.Column="0"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                BackgroundColor="#333333"
+                TextColor="White"
+                FontSize="16"
+                CornerRadius="8"
+                WidthRequest="90"
+                HeightRequest="40"
+                Margin="0,-10,0,0"
+                Clicked="OnBackClicked" />
 
         <Label Text="Please select your character"
                TextColor="#333333"
