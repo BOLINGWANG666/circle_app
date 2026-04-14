@@ -25,10 +25,21 @@ public partial class ChooseCharacter : ContentPage
         base.OnAppearing();
         if (AudioPlayer != null)
         {
-            AudioPlayer.Source = MediaSource.FromResource("tapstart.mp3");
+            AudioPlayer.Source = MediaSource.FromResource("BottonSound.mp3");
         }
     }
 
+
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+  
+        // 添加简单的缩放动画反馈
+        await BackButton.ScaleToAsync(0.9, 100, Easing.CubicOut);
+        await BackButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
+
+        // 返回上一页
+        await Navigation.PopAsync();
+    }
     private async void OnCharacterTapped(object sender, EventArgs e)
     {
         

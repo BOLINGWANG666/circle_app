@@ -713,7 +713,7 @@ public partial class BattleFieldPage : ContentPage
             ShowMissText(); // 触发 Miss 动画
             return;         // 直接 return，免除后续的扣血和震动
         }
-        // ======================================================
+        
 
         _playerHp -= amount;
         ShowDamageText(amount);
