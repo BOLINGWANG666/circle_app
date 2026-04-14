@@ -367,11 +367,11 @@ public partial class BattleFieldPage : ContentPage
 
                 var otherEnemy = _enemiesList[j];
                 double otherRadius = otherEnemy.IsBig ? 25.0 : 15.0;
-
+                //计算两个怪物之间的距离
                 double ex = enemy.WorldX - otherEnemy.WorldX;
                 double ey = enemy.WorldY - otherEnemy.WorldY;
                 double distSq = ex * ex + ey * ey;
-
+                //每个敌人安全距离是两者半径之和
                 double safeDist = myRadius + otherRadius;
 
                 // 只要发生重叠（距离小于安全距离）
@@ -388,7 +388,8 @@ public partial class BattleFieldPage : ContentPage
                         // 2. 正常排斥：把排斥系数从 0.15 提升到了 0.5
                         double dist = Math.Sqrt(distSq);
                         double overlap = safeDist - dist;
-                        // 0.5 意味着怪物会被强行向外推挤重叠部分的一半，完美抵消 1.5 的追击速度
+                        // 0.5 意味着怪物会被强行向外推挤重叠部分的一半
+                        //归一化向量并乘以重叠距离和排斥系数
                         pushX += (ex / dist) * overlap * 0.5;
                         pushY += (ey / dist) * overlap * 0.5;
                     }
@@ -660,7 +661,7 @@ public partial class BattleFieldPage : ContentPage
                 TranslationX = startX,
                 TranslationY = startY
             };
-            // 设置圆角为宽度的一半（10），使其变成完美的圆形
+            // 使其变成圆形
             ui.StrokeShape = new RoundRectangle { CornerRadius = 10 };
             MapGrid.Children.Add(ui);
 
@@ -706,6 +707,7 @@ public partial class BattleFieldPage : ContentPage
 
 
         // 闪避判定逻辑
+        //怪物碰到玩家，先生成一个 0-1 的随机数，如果小于闪避率，则Miss
         if (_rand.NextDouble() < _playerDodge)
         {
             ShowMissText(); // 触发 Miss 动画
