@@ -96,7 +96,7 @@ public partial class BattleFieldPage : ContentPage
     private List<SpellData> _currentOfferedSpells = new List<SpellData>();
     private SpellData? _selectedSpell = null;
 
-    public BattleFieldPage(Color charColor, int hp, int atk, double cd)
+    public BattleFieldPage(Color charColor, int hp, int atk, double cd, int charType = 1)
     {
         InitializeComponent();
         _playerColor = charColor;
@@ -104,6 +104,22 @@ public partial class BattleFieldPage : ContentPage
         _playerHp = hp;
         _playerAtk = atk;
         _playerCd = cd;
+
+        //根据传进来的 charType 决定显示圆还是三角
+        if (charType == 2)
+        {
+            PlayerCircle.IsVisible = false;
+            PlayerTriangle.IsVisible = true;
+            PlayerTriangle.Fill = _playerColor; // 三角形涂色
+        }
+        else
+        {
+            PlayerCircle.IsVisible = true;
+            PlayerTriangle.IsVisible = false;
+            PlayerCircle.BackgroundColor = _playerColor; // 圆形涂色
+        }
+
+        HpText.Text = $"{_playerHp}/{_playerMaxHp}";
 
         PlayerCircle.BackgroundColor = _playerColor;
 
@@ -255,8 +271,8 @@ public partial class BattleFieldPage : ContentPage
 
         MapGrid.TranslationX = cameraX;
         MapGrid.TranslationY = cameraY;
-        PlayerCircle.TranslationX = _playerWorldX;
-        PlayerCircle.TranslationY = _playerWorldY;
+        PlayerVisual.TranslationX = _playerWorldX;
+        PlayerVisual.TranslationY = _playerWorldY;
 
         double cullDistX = (screenWidth / 2) + 100;
         double cullDistY = (screenHeight / 2) + 100;
@@ -952,7 +968,7 @@ public partial class BattleFieldPage : ContentPage
             if (saveToDelete != null) Circle.ViewModels.CharacterViewModel.Current?.DeleteCharacter(saveToDelete);
         }
 
-        await Navigation.PushAsync(new ChooseCharacter());
+        await Navigation.PopAsync();
     }
 
     // 点击暂停面板左侧的“退出”直接停止应用进程

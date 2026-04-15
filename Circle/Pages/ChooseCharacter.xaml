@@ -6,110 +6,90 @@
              BackgroundColor="#F5F5DC"
              NavigationPage.HasNavigationBar="False"            
              NavigationPage.HasBackButton="False">
-    <Grid RowDefinitions="*, *, *" ColumnDefinitions="*, *, *" Padding="30">
 
-        <toolkit:MediaElement x:Name="AudioPlayer"
-                              Source="BottonSound.mp3"
-                              ShouldAutoPlay="False"
-                              Opacity="0"
-                              WidthRequest="1"
-                              HeightRequest="1"
-                              Volume="1.0" />
+    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*" 
+          ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" 
+          Padding="25">
+
+        <toolkit:MediaElement x:Name="AudioPlayer" Source="tapstart.mp3" ShouldAutoPlay="False" Opacity="0" WidthRequest="1" HeightRequest="1" />
 
         <Button x:Name="BackButton"
                 Text="&#x25C0; Back"
-                Grid.Row="0" Grid.Column="0"
-                HorizontalOptions="Start"
-                VerticalOptions="Start"
-                BackgroundColor="#333333"
-                TextColor="White"
-                FontSize="16"
-                CornerRadius="8"
-                WidthRequest="90"
-                HeightRequest="40"
-                Margin="0,-10,0,0"
+                TextColor="White" BackgroundColor="Black"
+                CornerRadius="10"
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                HorizontalOptions="Start" VerticalOptions="Center"
+                HeightRequest="50" WidthRequest="100"
                 Clicked="OnBackClicked" />
 
         <Label Text="Please select your character"
-               TextColor="#333333"
-               FontSize="30" 
-               FontAttributes="Bold"
-               Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-               VerticalOptions="Center" />
+               TextColor="#333333" FontSize="30" FontAttributes="Bold"
+               Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="5" 
+               Grid.RowSpan="2" 
+               LineBreakMode="WordWrap"
+               HorizontalOptions="Start" VerticalOptions="Center"
+               Margin="10,0,0,0" />
 
-        <VerticalStackLayout x:Name="StatsPanel"
-                             IsVisible="False"
-                             Grid.Row="0" Grid.Column="2"
-                             VerticalOptions="Center" HorizontalOptions="Center">
-            <Label x:Name="HpLabel" Text="HP: 50" TextColor="DarkGreen" FontSize="20" FontAttributes="Bold" />
-            
-            <Label x:Name="AtkLabel" Text="ATK: 15" TextColor="DarkRed" FontSize="20" FontAttributes="Bold" />
-            
-            <Label x:Name="CdLabel" Text="CD: 1.2s" TextColor="DarkBlue" FontSize="20" FontAttributes="Bold" />
-
-            <Label x:Name="DodgeLabel" Text="DODGE: 5%" TextColor="Teal" FontSize="20" FontAttributes="Bold" />
+        <VerticalStackLayout x:Name="StatsPanel" IsVisible="False"
+                             Grid.Row="0" Grid.Column="7" Grid.ColumnSpan="3"
+                             VerticalOptions="Center" HorizontalOptions="Start">
+            <Label x:Name="HpLabel" TextColor="DarkGreen" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="AtkLabel" TextColor="DarkRed" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="CdLabel" TextColor="DarkBlue" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="DodgeLabel" TextColor="Teal" FontSize="20" FontAttributes="Bold" />
         </VerticalStackLayout>
 
-        <Border Grid.Row="1" Grid.Column="0" 
-        Grid.RowSpan="2" Grid.ColumnSpan="2"
-        Stroke="Black" StrokeThickness="3"
-        BackgroundColor="Transparent" Margin="5">
+        <Border Grid.Row="2" Grid.Column="0" 
+                Grid.RowSpan="5" Grid.ColumnSpan="10"
+                Stroke="Black" StrokeThickness="4"
+                BackgroundColor="Transparent" Margin="5">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="0" />
             </Border.StrokeShape>
 
-            <Grid HorizontalOptions="Start" VerticalOptions="Start" 
-          Margin="20"
-          WidthRequest="110" HeightRequest="110">
-                <Border x:Name="SelectionBorder"
-                WidthRequest="100" HeightRequest="100"
-                Stroke="Black" StrokeThickness="4"
-                BackgroundColor="Transparent"
-                HorizontalOptions="Center" VerticalOptions="Center"
-                IsVisible="False">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="50" />
-                    </Border.StrokeShape>
-                </Border>
+            <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Start" Margin="30" Spacing="40">
 
-                <Border x:Name="CharacterCircle"
-                WidthRequest="80" HeightRequest="80"
-                BackgroundColor="Gray"
-                HorizontalOptions="Center" VerticalOptions="Center"
-                Stroke="Transparent">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="40" />
-                    </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnCharacterTapped" />
-                    </Border.GestureRecognizers>
-                </Border>
-            </Grid>
+                <Grid WidthRequest="130" HeightRequest="130">
+                    <Border x:Name="SelectionBorder1" WidthRequest="120" HeightRequest="120" Stroke="Black" StrokeThickness="5" IsVisible="False">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="60" />
+                        </Border.StrokeShape>
+                    </Border>
+                    <Border x:Name="CharacterCircle" WidthRequest="90" HeightRequest="90" BackgroundColor="Gray">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="45" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCharacter1Tapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+
+                <Grid WidthRequest="130" HeightRequest="130">
+                    <Polygon x:Name="SelectionBorder2" Points="55,0 110,110 0,110" Stroke="Black" StrokeThickness="5" Fill="Transparent" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
+
+                    <Grid x:Name="CharacterTriangle" WidthRequest="90" HeightRequest="90" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCharacter2Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Polygon Points="45,0 90,90 0,90" Fill="DarkGray" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+                </Grid>
+            </HorizontalStackLayout>
         </Border>
 
-
         <Label x:Name="WarningLabel"
-       Text="You need to choose a character"
-       TextColor="Red"
-       FontSize="20"
-       FontAttributes="Bold"
-       HorizontalOptions="Center"
-       VerticalOptions="End" 
-       Margin="20,0,0,10"
-       IsVisible="False" 
-       Grid.Row="1" Grid.Column="2" />
-        
-        
+               Text="You need to choose a character"
+               TextColor="Red" FontSize="20" FontAttributes="Bold"
+               Grid.Row="8" Grid.Column="7" Grid.ColumnSpan="3"
+               HorizontalOptions="Center" VerticalOptions="End"
+               IsVisible="False" />
+
         <Button x:Name="OkButton"
-        Text="OK"
-        IsEnabled="True" 
-        BackgroundColor="#333333"
-        TextColor="White"
-        FontSize="24"
-        CornerRadius="10"
-        Grid.Row="2" Grid.Column="2"
-        HorizontalOptions="Center" VerticalOptions="Center"
-        WidthRequest="120" HeightRequest="60"
-        Clicked="OnOkClicked" />
+                Text="OK" BackgroundColor="#333333" TextColor="White"
+                FontSize="24" CornerRadius="12"
+                Grid.Row="9" Grid.Column="7" Grid.ColumnSpan="3"
+                HorizontalOptions="Fill" VerticalOptions="Fill"
+                Margin="5" Clicked="OnOkClicked" />
     </Grid>
 </ContentPage>
