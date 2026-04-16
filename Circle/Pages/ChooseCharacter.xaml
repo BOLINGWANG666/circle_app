@@ -11,7 +11,7 @@
           ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" 
           Padding="25">
 
-        <toolkit:MediaElement x:Name="AudioPlayer" Source="tapstart.mp3" ShouldAutoPlay="False" Opacity="0" WidthRequest="1" HeightRequest="1" />
+        <toolkit:MediaElement x:Name="AudioPlayer" Source="BottonSound.mp3" ShouldAutoPlay="False" Opacity="0" WidthRequest="1" HeightRequest="1" />
 
         <Button x:Name="BackButton"
                 Text="&#x25C0; Back"
