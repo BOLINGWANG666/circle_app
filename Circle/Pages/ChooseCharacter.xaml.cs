@@ -23,7 +23,7 @@ public partial class ChooseCharacter : ContentPage
         base.OnAppearing();
         if (AudioPlayer != null)
         {
-            AudioPlayer.Source = MediaSource.FromResource("tapstart.mp3"); // 修正资源名称
+            AudioPlayer.Source = MediaSource.FromResource("BottonSound.mp3"); 
         }
     }
 
@@ -37,7 +37,7 @@ public partial class ChooseCharacter : ContentPage
     // 角色 1 (圆形) 的点击事件
     private async void OnCharacter1Tapped(object sender, EventArgs e)
     {
-        // 【核心修改】：判断是否已经是选中状态
+        // 判断是否已经是选中状态
         if (_selectedIndex == 1)
         {
             // 如果点的是已选中的，则取消选中
@@ -75,7 +75,7 @@ public partial class ChooseCharacter : ContentPage
     // 角色 2 (三角形) 的点击事件
     private async void OnCharacter2Tapped(object sender, EventArgs e)
     {
-        // 【核心修改】：判断是否已经是选中状态
+        // 判断是否已经是选中状态
         if (_selectedIndex == 2)
         {
             // 如果点的是已选中的，则取消选中
@@ -132,7 +132,7 @@ public partial class ChooseCharacter : ContentPage
         await OkButton.ScaleToAsync(0.9, 100, Easing.CubicOut);
         await OkButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        // 【修改这里】：在最后加上 _selectedIndex 传递给战场
-        await Navigation.PushAsync(new BattleFieldPage(_selectedColor, _selectedHp, _selectedAtk, _selectedCd, _selectedIndex));
+        
+        await Navigation.PushAsync(new BattleFieldPage(_selectedColor, _selectedHp, _selectedAtk, _selectedCd, _selectedDodge, _selectedIndex));
     }
 }

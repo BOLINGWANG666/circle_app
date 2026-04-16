@@ -96,7 +96,7 @@ public partial class BattleFieldPage : ContentPage
     private List<SpellData> _currentOfferedSpells = new List<SpellData>();
     private SpellData? _selectedSpell = null;
 
-    public BattleFieldPage(Color charColor, int hp, int atk, double cd, int charType = 1)
+    public BattleFieldPage(Color charColor, int hp, int atk, double cd,double dodge, int charType = 1)
     {
         InitializeComponent();
         _playerColor = charColor;
@@ -127,7 +127,7 @@ public partial class BattleFieldPage : ContentPage
         HpBar.Progress = 1.0;
         AtkText.Text = $"ATK: {_playerAtk}";
         CdText.Text = $"CD: {_playerCd}s";
-        _playerDodge = 0.05; 
+        _playerDodge = dodge;
         DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
         ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
         ExpBar.Progress = 0.0;
@@ -279,8 +279,8 @@ public partial class BattleFieldPage : ContentPage
         double screenCenterX = -cameraX;
         double screenCenterY = -cameraY;
 
-        // 40秒后初始化大红方块对象池 
-        if (_timeRemaining <= 40.0 && !_bigEnemiesInitialized)
+        // 45秒后初始化大红方块对象池 
+        if (_timeRemaining <= 45.0 && !_bigEnemiesInitialized)
         {
             _bigEnemiesInitialized = true;
             _framesUntilNextBigSpawn = _rand.Next(167, 334); // 2到4秒
@@ -445,9 +445,9 @@ public partial class BattleFieldPage : ContentPage
         {
             var proj = _activeProjectiles[i];
 
-            // 1. 子弹飞行（速度设定为 3.5）
-            proj.WorldX += proj.MoveDirX * 3.5;
-            proj.WorldY += proj.MoveDirY * 3.5;
+            // 1. 子弹飞行（速度设定为 4.5）
+            proj.WorldX += proj.MoveDirX * 4.5;
+            proj.WorldY += proj.MoveDirY * 4.5;
             proj.UIContainer.TranslationX = proj.WorldX;
             proj.UIContainer.TranslationY = proj.WorldY;
 
