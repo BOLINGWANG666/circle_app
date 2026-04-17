@@ -55,6 +55,7 @@
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                                     <Label Text="{Binding Slot1DisplayId, StringFormat='ID: {0}'}" FontSize="18" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot1ShapeText}" FontSize="14" FontAttributes="Bold" TextColor="#555555" HorizontalOptions="Center"/>
                                     <BoxView HeightRequest="2" Color="LightGray" Margin="0,2"/>
                                     <Label Text="{Binding Slot1.Level, StringFormat='LV: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="Purple" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot1.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
@@ -75,6 +76,7 @@
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                                     <Label Text="{Binding Slot2DisplayId, StringFormat='ID: {0}'}" FontSize="18" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot2ShapeText}" FontSize="14" FontAttributes="Bold" TextColor="#555555" HorizontalOptions="Center"/>
                                     <BoxView HeightRequest="2" Color="LightGray" Margin="0,2"/>
                                     <Label Text="{Binding Slot2.Level, StringFormat='LV: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="Purple" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot2.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>
@@ -94,6 +96,7 @@
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                                     <Label Text="{Binding Slot3DisplayId, StringFormat='ID: {0}'}" FontSize="18" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Slot3ShapeText}" FontSize="14" FontAttributes="Bold" TextColor="#555555" HorizontalOptions="Center"/>
                                     <BoxView HeightRequest="2" Color="LightGray" Margin="0,2"/>
                                     <Label Text="{Binding Slot3.Level, StringFormat='LV: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="Purple" HorizontalOptions="Center"/>
                                     <Label Text="{Binding Slot3.Hp, StringFormat='HP: {0}'}" FontSize="14" FontAttributes="Bold" TextColor="#D32F2F" HorizontalOptions="Center"/>

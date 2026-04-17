@@ -46,7 +46,7 @@
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                     <Label Text="EXP" FontAttributes="Bold" TextColor="White" FontSize="15" VerticalOptions="Center"/>
                     <ProgressBar x:Name="ExpBar" Progress="0.0" ProgressColor="#00BFFF" BackgroundColor="Black" WidthRequest="100" HeightRequest="12" VerticalOptions="Center"/>
-                    <Label x:Name="ExpText" Text="LV0 0/10" TextColor="White" FontSize="14" VerticalOptions="Center"/>
+                    <Label x:Name="ExpText" Text="0/10 LV0" TextColor="White" FontSize="14" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
         </Border>

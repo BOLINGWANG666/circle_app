@@ -11,10 +11,10 @@ public partial class VictoryPage : ContentPage
     {
         base.OnAppearing();
 
-        // 确保视图渲染完毕
+        // Ensure the view has finished rendering
         await Task.Delay(100);
 
-        // 播放动画
+        // Play animation
         await Task.WhenAll(
             VictoryLabel.TranslateToAsync(0, 0, 1500, Easing.CubicOut),
             VictoryLabel.FadeToAsync(1, 1500, Easing.CubicOut)
@@ -35,7 +35,7 @@ public partial class VictoryPage : ContentPage
         await RestartButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await RestartButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        // 跳转到选择角色页面
+        // Navigate to the character selection page
         await Navigation.PushAsync(new ChooseCharacter());
     }
 
@@ -45,7 +45,7 @@ public partial class VictoryPage : ContentPage
         await MenuButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await MenuButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        // 直接清空栈，回到主菜单
+        // Clear the stack directly and return to the main menu
         await Navigation.PopToRootAsync();
     }
 }

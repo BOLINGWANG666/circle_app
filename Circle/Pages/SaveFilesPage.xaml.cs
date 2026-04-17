@@ -10,7 +10,7 @@ public class SavePageGroup
     public PlayerSaveData? Slot2 { get; set; }
     public PlayerSaveData? Slot3 { get; set; }
 
-    // 新增独立的可视化序号，彻底屏蔽数据库的自增乱码
+
     public int Slot1DisplayId { get; set; }
     public int Slot2DisplayId { get; set; }
     public int Slot3DisplayId { get; set; }
@@ -18,6 +18,11 @@ public class SavePageGroup
     public bool IsSlot1Visible => Slot1 != null;
     public bool IsSlot2Visible => Slot2 != null;
     public bool IsSlot3Visible => Slot3 != null;
+
+
+    public string Slot1ShapeText => Slot1?.CharType == 2 ? "DarkGray Triangle" : "Gray Circle";
+    public string Slot2ShapeText => Slot2?.CharType == 2 ? "DarkGray Triangle" : "Gray Circle";
+    public string Slot3ShapeText => Slot3?.CharType == 2 ? "DarkGray Triangle" : "Gray Circle";
 }
 
 public partial class SaveFilesPage : ContentPage
@@ -45,7 +50,7 @@ public partial class SaveFilesPage : ContentPage
         var allSaves = Circle.ViewModels.CharacterViewModel.Current?.Characters?.OrderBy(x => x.Id).ToList() ?? new List<PlayerSaveData>();
         PagedSaves.Clear();
 
-        int displayCounter = 1; // 永远从 1 开始按绝对顺序递增
+        int displayCounter = 1; // Always increment in absolute order starting from 1
 
         for (int i = 0; i < allSaves.Count; i += 3)
         {
@@ -55,7 +60,7 @@ public partial class SaveFilesPage : ContentPage
                 Slot2 = i + 1 < allSaves.Count ? allSaves[i + 1] : null,
                 Slot3 = i + 2 < allSaves.Count ? allSaves[i + 2] : null,
 
-                // 按实际排列顺序依次贴上连续的标签
+                // Attach consecutive labels sequentially according to the actual arrangement order
                 Slot1DisplayId = i < allSaves.Count ? displayCounter++ : 0,
                 Slot2DisplayId = i + 1 < allSaves.Count ? displayCounter++ : 0,
                 Slot3DisplayId = i + 2 < allSaves.Count ? displayCounter++ : 0,
@@ -174,8 +179,9 @@ public partial class SaveFilesPage : ContentPage
             return;
         }
 
-        
-        await Navigation.PushAsync(new BattleFieldPage(_selectedSave, Colors.Grey));
+
+        Color loadColor = _selectedSave.CharType == 2 ? Colors.DarkGray : Colors.Gray;
+        await Navigation.PushAsync(new BattleFieldPage(_selectedSave, loadColor));
 
         button.IsEnabled = true;
     }
@@ -211,7 +217,7 @@ public partial class SaveFilesPage : ContentPage
             return;
         }
 
-        // 直接将选中的存档物理删除，因为有了独立显示编号，根本不需要再覆盖移动数据了
+        // Physically delete the selected save directly, because with independent display IDs, there is no need to overwrite and move data anymore
         Circle.ViewModels.CharacterViewModel.Current?.DeleteCharacter(_selectedSave);
 
         LoadSavesData();

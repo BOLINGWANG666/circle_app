@@ -17,9 +17,9 @@ public partial class CharacterViewModel : ObservableObject
         connection = DatabaseService.Connection;
     }
 
-    
 
-    // READ (查)：从数据库读取所有保存
+
+    // READ: Read all saves from the database
     public List<PlayerSaveData> Characters
     {
         get
@@ -28,7 +28,7 @@ public partial class CharacterViewModel : ObservableObject
         }
     }
 
-    // CREATE & UPDATE (增/改)：自动判断写入硬盘
+    // CREATE & UPDATE: Automatically determine whether to write to disk
     public void SaveCharacter(PlayerSaveData model)
     {
         if (model.Id > 0)
@@ -41,7 +41,7 @@ public partial class CharacterViewModel : ObservableObject
         }
     }
 
-    // DELETE (删)：从硬盘物理删除
+    // DELETE: Physically delete from the hard drive
     public void DeleteCharacter(PlayerSaveData model)
     {
         if (model.Id > 0)
