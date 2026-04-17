@@ -11,16 +11,16 @@ public partial class FailedPage : ContentPage
     {
         base.OnAppearing();
 
-        // 确保视图渲染完毕
+        // Ensure the view has finished rendering
         await Task.Delay(100);
 
-        
+
         await Task.WhenAll(
             FailedLabel.TranslateToAsync(0, 0, 1500, Easing.CubicOut),
             FailedLabel.FadeToAsync(1, 1500, Easing.CubicOut)
         );
 
-        
+
         await Task.WhenAll(
             RestartButton.FadeToAsync(1, 1000, Easing.Linear),
             MenuButton.FadeToAsync(1, 1000, Easing.Linear)
@@ -33,23 +33,23 @@ public partial class FailedPage : ContentPage
     private async void OnRestartClicked(object sender, EventArgs e)
     {
         SoundManager.PlayClick();
-        // 点击效果
+        // Click effect
         await RestartButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await RestartButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        // 跳转到选择角色页面
+        // Navigate to the character selection page
         await Navigation.PushAsync(new ChooseCharacter());
     }
 
     private async void OnMenuClicked(object sender, EventArgs e)
     {
         SoundManager.PlayClick();
-        // 点击效果
+        // Click effect
         await MenuButton.ScaleToAsync(0.95, 100, Easing.CubicOut);
         await MenuButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        // 使用 PopToRootAsync 直接清空所有叠加的页面，返回最初的 MainPage
-        // 这样可以避免游戏玩久了 Navigation 堆栈爆满导致内存泄漏
+        // Use PopToRootAsync to clear all stacked pages directly and return to the initial MainPage
+        // This avoids memory leaks caused by a full Navigation stack after playing the game for a long time
         await Navigation.PopToRootAsync();
     }
 }

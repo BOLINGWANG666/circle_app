@@ -1,11 +1,11 @@
 using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls.Shapes; // 必须引入以支持 Polygon 类型
+using Microsoft.Maui.Controls.Shapes; // Must be included to support the Polygon type
 
 namespace Circle.Pages;
 
 public partial class ChooseCharacter : ContentPage
 {
-    private int _selectedIndex = 0; // 0=未选, 1=圆形, 2=三角形
+    private int _selectedIndex = 0; // 0=Unselected, 1=Circle, 2=Triangle
 
     private int _selectedHp;
     private int _selectedAtk;
@@ -23,7 +23,7 @@ public partial class ChooseCharacter : ContentPage
         base.OnAppearing();
         if (AudioPlayer != null)
         {
-            AudioPlayer.Source = MediaSource.FromResource("BottonSound.mp3"); 
+            AudioPlayer.Source = MediaSource.FromResource("BottonSound.mp3");
         }
     }
 
@@ -34,13 +34,13 @@ public partial class ChooseCharacter : ContentPage
         await Navigation.PopAsync();
     }
 
-    // 角色 1 (圆形) 的点击事件
+    // Click event for Character 1 (Circle)
     private async void OnCharacter1Tapped(object sender, EventArgs e)
     {
-        // 判断是否已经是选中状态
+        // Check if it is already selected
         if (_selectedIndex == 1)
         {
-            // 如果点的是已选中的，则取消选中
+            // If the selected one is clicked, deselect it
             _selectedIndex = 0;
             SelectionBorder1.IsVisible = false;
             StatsPanel.IsVisible = false;
@@ -48,7 +48,7 @@ public partial class ChooseCharacter : ContentPage
         }
         else
         {
-            // 否则，执行选中逻辑
+            // Otherwise, execute selection logic
             _selectedIndex = 1;
             SelectionBorder1.IsVisible = true;
             SelectionBorder2.IsVisible = false;
@@ -64,7 +64,7 @@ public partial class ChooseCharacter : ContentPage
             UpdateDisplay();
         }
 
-        // 无论选中还是取消，都播放一个缩放反馈
+        // Play a scale feedback whether selected or deselected
         if (sender is View clickedShape)
         {
             await clickedShape.ScaleToAsync(1.1, 100, Easing.CubicOut);
@@ -72,13 +72,13 @@ public partial class ChooseCharacter : ContentPage
         }
     }
 
-    // 角色 2 (三角形) 的点击事件
+    // Click event for Character 2 (Triangle)
     private async void OnCharacter2Tapped(object sender, EventArgs e)
     {
-        // 判断是否已经是选中状态
+        // Check if it is already selected
         if (_selectedIndex == 2)
         {
-            // 如果点的是已选中的，则取消选中
+            // If the selected one is clicked, deselect it
             _selectedIndex = 0;
             SelectionBorder2.IsVisible = false;
             StatsPanel.IsVisible = false;
@@ -86,7 +86,7 @@ public partial class ChooseCharacter : ContentPage
         }
         else
         {
-            // 否则，执行选中逻辑
+            // Otherwise, execute selection logic
             _selectedIndex = 2;
             SelectionBorder1.IsVisible = false;
             SelectionBorder2.IsVisible = true;
@@ -102,7 +102,7 @@ public partial class ChooseCharacter : ContentPage
             UpdateDisplay();
         }
 
-        // 播放缩放反馈
+        // Play scale feedback
         if (sender is View clickedShape)
         {
             await clickedShape.ScaleToAsync(1.1, 100, Easing.CubicOut);
@@ -132,7 +132,7 @@ public partial class ChooseCharacter : ContentPage
         await OkButton.ScaleToAsync(0.9, 100, Easing.CubicOut);
         await OkButton.ScaleToAsync(1.0, 100, Easing.CubicIn);
 
-        
+
         await Navigation.PushAsync(new BattleFieldPage(_selectedColor, _selectedHp, _selectedAtk, _selectedCd, _selectedDodge, _selectedIndex));
     }
 }

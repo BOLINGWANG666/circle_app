@@ -8,7 +8,7 @@ public class PlayerSaveData
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
-    // 战斗与进度属性
+    // Battle and Progress Attributes
     public int Hp { get; set; }
     public int MaxHp { get; set; }
     public int Atk { get; set; }
@@ -18,4 +18,5 @@ public class PlayerSaveData
     public int Level { get; set; }
     public int Exp { get; set; }
     public double TimeRemaining { get; set; } = 60.0;
+    public int CharType { get; set; }
 }

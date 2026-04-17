@@ -1,15 +1,14 @@
-﻿
-using Plugin.Maui.Audio;
+﻿using Plugin.Maui.Audio;
 
 namespace Circle;
 
-// 注意static 关键字，意味着它是全局唯一的，不需要 new 就能用
+// Note the static keyword, which means it is globally unique and can be used without new
 public static class SoundManager
 {
     private static IAudioPlayer? _clickPlayer;
     private static bool _isInitialized = false;
 
-    // 全局初始化方法（只执行一次）
+    // Global initialization method (executed only once)
     public static async Task InitializeAsync()
     {
         if (!_isInitialized)
@@ -21,7 +20,7 @@ public static class SoundManager
         }
     }
 
-    // 全局播放方法
+    // Global play method
     public static void PlayClick()
     {
         if (_clickPlayer != null)

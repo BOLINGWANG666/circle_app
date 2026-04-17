@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
 using System.Linq;
-using System.Text.Json; // 引入 JSON 库
-using Circle.Models;    // 引入刚建好的数据模型
+using System.Text.Json; // Introducing JSON Library
+using Circle.Models;    // Introduce the newly built data model
 
 namespace Circle.Pages;
 
@@ -20,8 +20,8 @@ public partial class BattleFieldPage : ContentPage
     private int _playerHp;
     private int _playerAtk;
     private double _playerCd;
-    private double _playerDodge; // 玩家当前的闪避率
-    private bool _isShowingMiss = false; // 防止 Miss 动画重叠
+    private double _playerDodge; // Player's current dodge rate
+    private bool _isShowingMiss = false; // Prevent Miss animation from overlapping
 
     private int _playerLevel = 0;
     private int _playerExp = 0;
@@ -47,9 +47,9 @@ public partial class BattleFieldPage : ContentPage
         public int Hp { get; set; }
         public int MaxHp { get; set; }
 
-        // 区分大红方块和普通小红方块
+        // Distinguish between large red squares and regular small red squares
         public bool IsBig { get; set; } = false;
-        // 大红方块的移动方向和转向计时器
+        // The movement direction and turn timer of the big red square
         public double MoveDirX { get; set; }
         public double MoveDirY { get; set; }
         public int FramesUntilDirChange { get; set; }
@@ -57,7 +57,7 @@ public partial class BattleFieldPage : ContentPage
         public int FramesUntilNextShoot { get; set; }
     }
 
-    // 子弹的数据结构与对象池 
+    //The data structure and object pool of bullets
     private class ProjectileInfo
     {
         public required Border UIContainer { get; set; }
@@ -84,19 +84,19 @@ public partial class BattleFieldPage : ContentPage
     private List<BoxView> _gems = new List<BoxView>();
     private Queue<EnemyInfo> _deadEnemiesPool = new Queue<EnemyInfo>();
 
-    // 大红方块专属的对象池和计时器
+    // Exclusive object pool and timer for the big red square
     private Queue<EnemyInfo> _deadBigEnemiesPool = new Queue<EnemyInfo>();
     private bool _bigEnemiesInitialized = false;
     private int _framesUntilNextBigSpawn = 0;
-
+    private int _charType = 1;
     private int _currentSaveSessionId = 0;
 
-    // JSON 数据管理核心变量
+    // JSON Data Management Core Variables
     private List<SpellData> _allSpells = new List<SpellData>();
     private List<SpellData> _currentOfferedSpells = new List<SpellData>();
     private SpellData? _selectedSpell = null;
 
-    public BattleFieldPage(Color charColor, int hp, int atk, double cd,double dodge, int charType = 1)
+    public BattleFieldPage(Color charColor, int hp, int atk, double cd, double dodge, int charType = 1)
     {
         InitializeComponent();
         _playerColor = charColor;
@@ -104,19 +104,19 @@ public partial class BattleFieldPage : ContentPage
         _playerHp = hp;
         _playerAtk = atk;
         _playerCd = cd;
-
-        //根据传进来的 charType 决定显示圆还是三角
+        _charType = charType;
+        //Determine whether to display circles or triangles based on the incoming charType
         if (charType == 2)
         {
             PlayerCircle.IsVisible = false;
             PlayerTriangle.IsVisible = true;
-            PlayerTriangle.Fill = _playerColor; // 三角形涂色
+            PlayerTriangle.Fill = _playerColor; // Triangle coloring
         }
         else
         {
             PlayerCircle.IsVisible = true;
             PlayerTriangle.IsVisible = false;
-            PlayerCircle.BackgroundColor = _playerColor; // 圆形涂色
+            PlayerCircle.BackgroundColor = _playerColor; // Circular coloring
         }
 
         HpText.Text = $"{_playerHp}/{_playerMaxHp}";
@@ -129,7 +129,7 @@ public partial class BattleFieldPage : ContentPage
         CdText.Text = $"CD: {_playerCd}s";
         _playerDodge = dodge;
         DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
-        ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
+        ExpText.Text = $"{_playerExp}/{_expToNextLevel} LV{_playerLevel}";
         ExpBar.Progress = 0.0;
 
         _gameLoopTimer = Dispatcher.CreateTimer();
@@ -145,12 +145,27 @@ public partial class BattleFieldPage : ContentPage
         _playerHp = saveData.Hp;
         _playerAtk = saveData.Atk;
         _playerCd = saveData.Cd;
+        _charType = saveData.CharType == 0 ? 1 : saveData.CharType;
 
         _playerLevel = saveData.Level;
         _playerExp = saveData.Exp;
         _expToNextLevel = 10 + (_playerLevel * 5);
         _timeRemaining = saveData.TimeRemaining > 0 ? saveData.TimeRemaining : 60.0;
         _currentSaveSessionId = saveData.Id;
+
+        if (_charType == 2)
+        {
+            PlayerCircle.IsVisible = false;
+            PlayerTriangle.IsVisible = true;
+            PlayerTriangle.Fill = _playerColor;
+        }
+        else
+        {
+            PlayerCircle.IsVisible = true;
+            PlayerTriangle.IsVisible = false;
+            PlayerCircle.BackgroundColor = _playerColor;
+        }
+
 
         PlayerCircle.BackgroundColor = _playerColor;
 
@@ -160,7 +175,7 @@ public partial class BattleFieldPage : ContentPage
         CdText.Text = $"CD: {_playerCd:F1}s";
         _playerDodge = saveData.DodgeChance;
         DodgeText.Text = $"DODGE: {_playerDodge * 100:F0}%";
-        ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
+        ExpText.Text = $"{_playerExp}/{_expToNextLevel} LV{_playerLevel}";
         ExpBar.Progress = (double)_playerExp / _expToNextLevel;
         TimeLabel.Text = Math.Ceiling(_timeRemaining).ToString();
 
@@ -174,7 +189,7 @@ public partial class BattleFieldPage : ContentPage
         base.OnAppearing();
         _activeWaves.Clear();
 
-        // 动态加载 JSON 技能库
+        //Dynamically load JSON skill library
         try
         {
             using var stream = await FileSystem.OpenAppPackageFileAsync("spells.json");
@@ -279,11 +294,11 @@ public partial class BattleFieldPage : ContentPage
         double screenCenterX = -cameraX;
         double screenCenterY = -cameraY;
 
-        // 45秒后初始化大红方块对象池 
+        // Initialize the large red cube object pool in 45 seconds
         if (_timeRemaining <= 45.0 && !_bigEnemiesInitialized)
         {
             _bigEnemiesInitialized = true;
-            _framesUntilNextBigSpawn = _rand.Next(167, 334); // 2到4秒
+            _framesUntilNextBigSpawn = _rand.Next(167, 334); // 2 to 4 seconds
 
             for (int i = 0; i < 15; i++)
             {
@@ -294,7 +309,7 @@ public partial class BattleFieldPage : ContentPage
             }
         }
 
-        // 处理大红方块的生成倒计时 
+        // Process the countdown for generating the big red square 
         if (_bigEnemiesInitialized)
         {
             _framesUntilNextBigSpawn--;
@@ -305,7 +320,7 @@ public partial class BattleFieldPage : ContentPage
             }
         }
 
-        //小方形生成逻辑
+        //Small Square Generation Logic
         _framesUntilNextSpawn--;
         if (_framesUntilNextSpawn <= 0 && _enemiesList.Count < 20)
         {
@@ -313,44 +328,44 @@ public partial class BattleFieldPage : ContentPage
             _framesUntilNextSpawn = _rand.Next(40, 80);
         }
 
-        // 新的怪物移动与碰撞逻辑 
+        // New monster movement and collision logic
         for (int i = _enemiesList.Count - 1; i >= 0; i--)
         {
             var enemy = _enemiesList[i];
 
             if (enemy.IsBig)
             {
-                // 大红方块移动逻辑：随机游走 + 碰壁反弹
+                // Big red square movement logic: random walk + wall bounce
                 enemy.FramesUntilDirChange--;
                 if (enemy.FramesUntilDirChange <= 0)
                 {
                     double angle = _rand.NextDouble() * 2 * Math.PI;
                     enemy.MoveDirX = Math.Cos(angle);
                     enemy.MoveDirY = Math.Sin(angle);
-                    enemy.FramesUntilDirChange = _rand.Next(250, 417); // 3到5秒换向
+                    enemy.FramesUntilDirChange = _rand.Next(250, 417); // Change direction in 3 to 5 seconds
                 }
 
                 enemy.WorldX += enemy.MoveDirX * 2.0;
                 enemy.WorldY += enemy.MoveDirY * 2.0;
 
-                // 碰到地图边缘反弹
+                // Bounce when hitting map edges
                 if (enemy.WorldX < -725 || enemy.WorldX > 725) { enemy.MoveDirX *= -1; enemy.WorldX = Math.Clamp(enemy.WorldX, -725, 725); }
                 if (enemy.WorldY < -725 || enemy.WorldY > 725) { enemy.MoveDirY *= -1; enemy.WorldY = Math.Clamp(enemy.WorldY, -725, 725); }
-                
-                
-                // 大怪射击倒计时控制 
+
+
+                // Big monster shooting countdown control 
                 enemy.FramesUntilNextShoot--;
                 if (enemy.FramesUntilNextShoot <= 0)
                 {
-                    // 在大怪当前的位置生成一颗子弹
+                    // Spawn a bullet at the big monster's current position
                     SpawnProjectile(enemy.WorldX, enemy.WorldY);
-                    // 重置下一次开火的时间为 1到 3秒
+                    // Reset the next fire time to 1 to 3 seconds
                     enemy.FramesUntilNextShoot = _rand.Next(84, 250);
                 }
             }
             else
             {
-                // 普通小红方块移动逻辑：追逐玩家
+                // Normal small red square movement logic: chase player
                 double dx = _playerWorldX - enemy.WorldX;
                 double dy = _playerWorldY - enemy.WorldY;
                 double distSqToPlayer = dx * dx + dy * dy;
@@ -366,13 +381,13 @@ public partial class BattleFieldPage : ContentPage
             enemy.UIContainer.TranslationX = enemy.WorldX;
             enemy.UIContainer.TranslationY = enemy.WorldY;
 
-            // 视锥剔除控制显示
+            // Frustum culling display control
             if (Math.Abs(screenCenterX - enemy.WorldX) > cullDistX || Math.Abs(screenCenterY - enemy.WorldY) > cullDistY)
                 enemy.UIContainer.IsVisible = false;
             else
                 enemy.UIContainer.IsVisible = true;
 
-            // 重合的分离
+            // Separation of overlapping entities
             double pushX = 0;
             double pushY = 0;
             double myRadius = enemy.IsBig ? 25.0 : 15.0;
@@ -383,17 +398,17 @@ public partial class BattleFieldPage : ContentPage
 
                 var otherEnemy = _enemiesList[j];
                 double otherRadius = otherEnemy.IsBig ? 25.0 : 15.0;
-                //计算两个怪物之间的距离
+                // Calculate the distance between two monsters
                 double ex = enemy.WorldX - otherEnemy.WorldX;
                 double ey = enemy.WorldY - otherEnemy.WorldY;
                 double distSq = ex * ex + ey * ey;
-                //每个敌人安全距离是两者半径之和
+                // The safe distance for each enemy is the sum of their radii
                 double safeDist = myRadius + otherRadius;
 
-                // 只要发生重叠（距离小于安全距离）
+                // As long as overlap occurs (distance is less than safe distance)
                 if (distSq < safeDist * safeDist)
                 {
-                    // 1. 如果距离几乎为0，给一个随机方向的强震荡力打破平衡
+                    // 1. If the distance is almost 0, apply a strong random oscillation force to break the balance
                     if (distSq < 0.001)
                     {
                         pushX += (_rand.NextDouble() - 0.5) * 10;
@@ -401,11 +416,11 @@ public partial class BattleFieldPage : ContentPage
                     }
                     else
                     {
-                        // 2. 正常排斥：把排斥系数从 0.15 提升到了 0.5
+                        // 2. Normal repulsion: increased the repulsion coefficient from 0.15 to 0.5
                         double dist = Math.Sqrt(distSq);
                         double overlap = safeDist - dist;
-                        // 0.5 意味着怪物会被强行向外推挤重叠部分的一半
-                        //归一化向量并乘以重叠距离和排斥系数
+                        // 0.5 means monsters will be forcibly pushed outward by half of the overlapping part
+                        // Normalize the vector and multiply by the overlap distance and repulsion coefficient
                         pushX += (ex / dist) * overlap * 0.5;
                         pushY += (ey / dist) * overlap * 0.5;
                     }
@@ -414,44 +429,44 @@ public partial class BattleFieldPage : ContentPage
 
             enemy.WorldX += pushX;
             enemy.WorldY += pushY;
-            
 
 
-            // 碰撞玩家判定
+
+            // Player collision detection
             double pDx = _playerWorldX - enemy.WorldX;
             double pDy = _playerWorldY - enemy.WorldY;
             double pDistSq = pDx * pDx + pDy * pDy;
 
-            // 大方块体型大，碰撞判定范围相应增大
+            // Big squares are larger, so the collision detection range is increased accordingly
             double collisionThreshold = enemy.IsBig ? 2500 : 1600;
 
             if (pDistSq < collisionThreshold)
             {
                 enemy.UIContainer.IsVisible = false;
 
-                // 死亡后放回各自正确的对象池
+                // Return to their respective correct object pools after death
                 if (enemy.IsBig) _deadBigEnemiesPool.Enqueue(enemy);
                 else _deadEnemiesPool.Enqueue(enemy);
 
                 _enemiesList.RemoveAt(i);
 
-                // 大怪扣 20 滴血，小怪扣 5 滴血
+                // Big monsters deduct 20 HP, small monsters deduct 5 HP
                 TakeDamage(enemy.IsBig ? 20 : 5);
             }
         }
 
-        // 子弹的飞行、边界消失与碰撞判定 
+        // Bullet flight, boundary disappearance, and collision detection 
         for (int i = _activeProjectiles.Count - 1; i >= 0; i--)
         {
             var proj = _activeProjectiles[i];
 
-            // 1. 子弹飞行（速度设定为 4.5）
+            // 1. Bullet flight (speed set to 4.5)
             proj.WorldX += proj.MoveDirX * 4.5;
             proj.WorldY += proj.MoveDirY * 4.5;
             proj.UIContainer.TranslationX = proj.WorldX;
             proj.UIContainer.TranslationY = proj.WorldY;
 
-            // 2. 如果碰到地图边缘，直接消失并回收
+            // 2. If it hits the map edge, disappear and recycle directly
             if (proj.WorldX < -725 || proj.WorldX > 725 || proj.WorldY < -725 || proj.WorldY > 725)
             {
                 proj.UIContainer.IsVisible = false;
@@ -460,21 +475,21 @@ public partial class BattleFieldPage : ContentPage
                 continue;
             }
 
-            // 3. 检测是否打中玩家
+            // 3. Check if it hits the player
             double pDx = _playerWorldX - proj.WorldX;
             double pDy = _playerWorldY - proj.WorldY;
             double pDistSq = pDx * pDx + pDy * pDy;
 
-            // 玩家圆圈半径25，子弹半径10
-            
+            // Player circle radius 25, bullet radius 10
+
             if (pDistSq < 900)
             {
-                // 打中玩家后子弹消失回收
+                // Bullet disappears and recycles after hitting the player
                 proj.UIContainer.IsVisible = false;
                 _deadProjectilesPool.Enqueue(proj);
                 _activeProjectiles.RemoveAt(i);
 
-                // 触发玩家扣除 5 点血和震动反馈
+                // Trigger 5 HP deduction and vibration feedback for the player
                 TakeDamage(5);
             }
         }
@@ -545,7 +560,7 @@ public partial class BattleFieldPage : ContentPage
                         DropGem(enemy.WorldX, enemy.WorldY);
                         enemy.UIContainer.IsVisible = false;
 
-                        // 打死大方块放回大方块池，打死小方块放回小方块池
+                        // Put dead big squares back into the big square pool, dead small squares into the small square pool
                         if (enemy.IsBig) _deadBigEnemiesPool.Enqueue(enemy);
                         else _deadEnemiesPool.Enqueue(enemy);
 
@@ -554,7 +569,7 @@ public partial class BattleFieldPage : ContentPage
 
                     else
                     {
-                        // 如果怪物没死，根据剩余血量比例动态缩放红色血条
+                        // If the monster is not dead, dynamically scale the red HP bar based on the remaining HP ratio
                         enemy.HpBar.ScaleX = Math.Max(0, (double)enemy.Hp / enemy.MaxHp);
                     }
                 }
@@ -606,7 +621,7 @@ public partial class BattleFieldPage : ContentPage
     }
 
 
-    // 专门生成随机游走的大红方块 
+    // Specifically spawn a big red square for random walking 
     private void SpawnBigEnemy()
     {
         double x, y;
@@ -615,12 +630,12 @@ public partial class BattleFieldPage : ContentPage
             x = _rand.Next(-700, 700);
             y = _rand.Next(-700, 700);
         }
-        // 保证出生点不要太靠近玩家 
+        // Ensure the spawn point is not too close to the player 
         while ((x - _playerWorldX) * (x - _playerWorldX) + (y - _playerWorldY) * (y - _playerWorldY) < 40000);
 
         var bigEnemy = _deadBigEnemiesPool.Dequeue();
 
-        // 重置大红方块的属性
+        // Reset the properties of the big red square
         bigEnemy.Hp = bigEnemy.MaxHp;
         bigEnemy.HpBar.ScaleX = 1.0;
         bigEnemy.WorldX = x;
@@ -629,29 +644,29 @@ public partial class BattleFieldPage : ContentPage
         bigEnemy.UIContainer.TranslationY = y;
         bigEnemy.UIContainer.IsVisible = true;
 
-        // 随机给一个初始的运动方向角度
+        // Randomly assign an initial movement direction angle
         double angle = _rand.NextDouble() * 2 * Math.PI;
         bigEnemy.MoveDirX = Math.Cos(angle);
         bigEnemy.MoveDirY = Math.Sin(angle);
-        bigEnemy.FramesUntilDirChange = _rand.Next(84, 250); // 1到3秒的时间更换方向
+        bigEnemy.FramesUntilDirChange = _rand.Next(84, 250); // Change direction in 1 to 3 seconds
 
-        // 初始化发射子弹的倒计时（1到3秒）
+        // Initialize the bullet firing countdown (1 to 3 seconds)
         bigEnemy.FramesUntilNextShoot = _rand.Next(84, 250);
 
         _enemiesList.Add(bigEnemy);
     }
 
-    // 生成红色圆形子弹的方法 
+    // Method to spawn red circular bullets 
     private void SpawnProjectile(double startX, double startY)
     {
-        // 随机一个 360 度的发射方向
+        // Randomize a 360-degree firing direction
         double angle = _rand.NextDouble() * 2 * Math.PI;
         double dirX = Math.Cos(angle);
         double dirY = Math.Sin(angle);
 
         if (_deadProjectilesPool.Count > 0)
         {
-            // 从回收池复用子弹
+            // Reuse bullets from the recycle pool
             var proj = _deadProjectilesPool.Dequeue();
             proj.WorldX = startX;
             proj.WorldY = startY;
@@ -664,7 +679,7 @@ public partial class BattleFieldPage : ContentPage
         }
         else
         {
-            // 新建一个红色圆形带黑色边框
+            // Create a new red circle with a black border
             var ui = new Border
             {
                 WidthRequest = 20,
@@ -677,7 +692,7 @@ public partial class BattleFieldPage : ContentPage
                 TranslationX = startX,
                 TranslationY = startY
             };
-            // 使其变成圆形
+            // Make it circular
             ui.StrokeShape = new RoundRectangle { CornerRadius = 10 };
             MapGrid.Children.Add(ui);
 
@@ -722,34 +737,34 @@ public partial class BattleFieldPage : ContentPage
         if (_playerHp <= 0 || _isGameOver || PausePanel.IsVisible) return;
 
 
-        // 闪避判定逻辑
-        //怪物碰到玩家，先生成一个 0-1 的随机数，如果小于闪避率，则Miss
+        // Dodge calculation logic
+        // When a monster touches the player, generate a random number between 0-1; if less than dodge rate, it's a Miss
         if (_rand.NextDouble() < _playerDodge)
         {
-            ShowMissText(); // 触发 Miss 动画
-            return;         // 直接 return，免除后续的扣血和震动
+            ShowMissText(); // Trigger Miss animation
+            return;         // Return directly to avoid subsequent HP deduction and vibration
         }
-        
+
 
         _playerHp -= amount;
         ShowDamageText(amount);
         _playerHp -= amount;
         ShowDamageText(amount);
 
-        // 处理手机震动反馈 1秒冷却
+        // Handle phone vibration feedback with 1-second cooldown
         if ((DateTime.Now - _lastVibrationTime).TotalSeconds >= 1.0)
         {
             try
             {
-                // 让手机震动 150 毫秒
+                // Vibrate phone for 150 milliseconds
                 Microsoft.Maui.Devices.Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(150));
             }
             catch
             {
-                // 忽略不支持震动的设备抛出的异常
+                // Ignore exceptions thrown by devices that do not support vibration
             }
 
-            _lastVibrationTime = DateTime.Now; // 更新上次震动时间
+            _lastVibrationTime = DateTime.Now; // Update the last vibration time
         }
 
         if (_playerHp <= 0)
@@ -774,7 +789,7 @@ public partial class BattleFieldPage : ContentPage
 
     private async void ShowMissText()
     {
-        // 防止屏幕被 Miss 刷屏重叠
+        // Prevent the screen from being spammed and overlapped by Miss texts
         if (_isShowingMiss) return;
         _isShowingMiss = true;
 
@@ -786,7 +801,7 @@ public partial class BattleFieldPage : ContentPage
 
         MapGrid.Children.Remove(missLabel);
 
-        // 动画完全消失后，解锁允许下一次显示
+        // Unlock to allow next display after the animation completely disappears
         _isShowingMiss = false;
     }
 
@@ -803,7 +818,7 @@ public partial class BattleFieldPage : ContentPage
 
             _gameLoopTimer.Stop();
 
-            // 使用 Guid.NewGuid() 进行真随机洗牌
+            // Use Guid.NewGuid() for true random shuffling
             if (_allSpells.Count >= 3)
             {
                 _currentOfferedSpells = _allSpells.OrderBy(x => Guid.NewGuid()).Take(3).ToList();
@@ -826,12 +841,12 @@ public partial class BattleFieldPage : ContentPage
             LevelUpPanel.IsVisible = true;
         }
 
-        ExpText.Text = $"LV{_playerLevel} {_playerExp}/{_expToNextLevel}";
+        ExpText.Text = $"{_playerExp}/{_expToNextLevel} LV{_playerLevel}";
         ExpBar.Progress = (double)_playerExp / _expToNextLevel;
     }
 
 
-    //  精简的点击总控
+    // Streamlined click master control
     private async void OnCardTapped(object sender, EventArgs e)
     {
         SoundManager.PlayClick();
@@ -864,7 +879,7 @@ public partial class BattleFieldPage : ContentPage
     {
         if (_selectedSpell == null) return;
 
-        // 动态计算属性，不再写死
+        // Dynamically calculate properties, no longer hardcoded
         switch (_selectedSpell.EffectType)
         {
             case "Atk":
@@ -879,7 +894,7 @@ public partial class BattleFieldPage : ContentPage
                 _playerHp += (int)_selectedSpell.Value;
                 break;
             case "Dodge":
-                _playerDodge += _selectedSpell.Value; 
+                _playerDodge += _selectedSpell.Value;
                 break;
             case "Heal":
                 _playerHp += (int)_selectedSpell.Value;
@@ -897,6 +912,7 @@ public partial class BattleFieldPage : ContentPage
         {
             Id = _currentSaveSessionId,
             Hp = _playerHp,
+            CharType = _charType,
             MaxHp = _playerMaxHp,
             Atk = _playerAtk,
             Cd = _playerCd,
@@ -924,7 +940,7 @@ public partial class BattleFieldPage : ContentPage
         _gameLoopTimer.Start();
     }
 
-    // 暂停与交互方法
+    // Pause and interaction methods
     private async void OnPauseClicked(object sender, EventArgs e)
     {
         if (_isGameOver) return;
@@ -971,12 +987,12 @@ public partial class BattleFieldPage : ContentPage
         await Navigation.PopAsync();
     }
 
-    // 点击暂停面板左侧的“退出”直接停止应用进程
+    // Click "Exit" on the left side of the pause panel to directly stop the application process
     private async void OnQuitInPauseClicked(object sender, EventArgs e)
     {
         SoundManager.PlayClick();
 
-        
+
         if (this.FindByName<Border>("QuitBtnInPause") is Border quitBtn)
         {
             await quitBtn.ScaleToAsync(0.9, 100);
@@ -989,7 +1005,7 @@ public partial class BattleFieldPage : ContentPage
         _gameLoopTimer.Stop();
         BgmPlayer.Stop();
 
-        // 强行关闭进程，退出应用
+        // Force close the process and exit the application
         Application.Current?.Quit();
     }
 }

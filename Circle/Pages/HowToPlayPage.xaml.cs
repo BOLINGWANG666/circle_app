@@ -74,10 +74,10 @@ public partial class HowToPlayPage : ContentPage
         Page4.IsVisible = (_currentPageIndex == 4);
         Page5.IsVisible = (_currentPageIndex == 5);
 
-        // 切换页面时，滚回顶端
+        // Scroll back to the top when switching pages
         ContentScrollView.ScrollToAsync(0, 0, false);
 
-        // 使用 Dispatcher 确保 MAUI 已经把新一页的元素全部渲染完，再去测量高度，杜绝误差！
+        // Use Dispatcher to ensure MAUI has fully rendered the new page's elements before measuring height to prevent errors!
         Dispatcher.Dispatch(() =>
         {
             CheckScrollHintVisibility();
@@ -89,14 +89,14 @@ public partial class HowToPlayPage : ContentPage
         }
     }
 
-    // 箭头逻辑
+    // Arrow logic
 
-    // 独立的高度检查方法
+    // Independent height check method
     private void CheckScrollHintVisibility()
     {
         if (ScrollDownHintLayer == null || ContentScrollView == null) return;
 
-        //  只有当内容实际总高度 > 容器物理高度，才说明有内容被挡住了，需要提示下滑
+        // Only when the actual total content height > the container's physical height, it means content is hidden and a scroll down hint is needed
         if (ContentScrollView.ContentSize.Height > ContentScrollView.Height && ContentScrollView.Height > 0)
         {
             ScrollDownHintLayer.IsVisible = true;
@@ -108,7 +108,7 @@ public partial class HowToPlayPage : ContentPage
         }
     }
 
-    // 容器大小发生改变时也检查一次
+    // Also check once when the container size changes
     private void OnScrollViewSizeChanged(object sender, EventArgs e)
     {
         CheckScrollHintVisibility();
@@ -118,13 +118,13 @@ public partial class HowToPlayPage : ContentPage
     {
         if (ScrollDownHintLayer != null)
         {
-            // 如果往下划了超过 5 像素，立马隐身
+            // If scrolled down more than 5 pixels, hide immediately
             if (e.ScrollY > 5 && ScrollDownHintLayer.IsVisible)
             {
                 ScrollDownHintLayer.IsVisible = false;
                 _ = ScrollDownHintLayer.FadeToAsync(0, 200, Easing.Linear);
             }
-            // 如果玩家滑回了顶端，且内容确实比屏幕长（需要下拉），才重新显示箭头
+            // If the player scrolls back to the top and the content is indeed longer than the screen (needs scrolling), show the arrow again
             else if (e.ScrollY <= 5 && !ScrollDownHintLayer.IsVisible && ContentScrollView.ContentSize.Height > ContentScrollView.Height)
             {
                 ScrollDownHintLayer.IsVisible = true;
