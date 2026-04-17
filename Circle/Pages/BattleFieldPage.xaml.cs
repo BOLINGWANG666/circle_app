@@ -119,8 +119,6 @@ public partial class BattleFieldPage : ContentPage
             PlayerCircle.BackgroundColor = _playerColor; // Circular coloring
         }
 
-        HpText.Text = $"{_playerHp}/{_playerMaxHp}";
-
         PlayerCircle.BackgroundColor = _playerColor;
 
         HpText.Text = $"{_playerHp}/{_playerMaxHp}";
